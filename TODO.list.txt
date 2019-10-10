@@ -1,0 +1,14 @@
+Q1: How to import an xml file in javascript.
+Status: in process 
+
+Q2: How to generate an html page according to file being viewed.
+Status: open
+
+Q3: html page structure.
+Status: open
+
+Q4: page presentation with css
+Status: open
+
+Q5: interactive pages with js
+Status: open
