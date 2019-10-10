@@ -17,4 +17,4 @@ Q6: main page
 Status: open
 
 Q7: utility's keys
-Status: open
+Status: in process
