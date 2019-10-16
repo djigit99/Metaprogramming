@@ -20,18 +20,18 @@ def __gen__(path):
     cur_path = path
     for (dirpath, dirnames, filenames) in tree:
         dirpath = dirpath.replace('\\\\', '\\')
-        print(dirpath)
         depth_diff = path_depth(cur_path) - path_depth(dirpath)
         if depth_diff == 0 and cur_path != path:
             html_code += '</li>'
-        else:
+        elif depth_diff > 0:
             while depth_diff > 0:
                 html_code +='</li>'
                 html_code += '</ul>'
                 depth_diff -= 1
+            html_code += '</li>'
         dir_name = os.path.split(dirpath)[1]
-        print('dirpath:' + dirpath + ' dir_name: ' + dir_name)
-        html_code += '<li><span class="caret">' + dir_name + '</span>'
+        print('dirpath:' + dirpath)
+        html_code += '<li><span class="caret_treeView">' + dir_name + '</span>'
         if dirnames or filenames:
             html_code += '<ul class="nested">'
         for filename in filenames:
