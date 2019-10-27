@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 def path_depth(path):
     return path.count('\\') + 1
 
+
 # Generate html docs
 def __gen__(path):
     tree = os.walk(path)
