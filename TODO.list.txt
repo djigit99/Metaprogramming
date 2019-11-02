@@ -23,4 +23,6 @@ Q8: types of object: decide which types of object we want to parse
 Status: in process
 
 Q9: comment design (should we use docblock ?)
-Status: open
+Status: closed
+
+
