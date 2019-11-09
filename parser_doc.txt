@@ -37,12 +37,6 @@ tags:
 
 parser class returns namespace, items
 
-two ways to declare global var:
-$var = 1;
-
-$GLOBAL['var'] = 1;
-
-'define' can't be inside of class, use const instead
 
 ---- Ways of parse comment(com):
 
@@ -58,6 +52,29 @@ GLOBAL state:
 	com -> class: add com to class
 	com -> interface: add com to interface
 	com -> trait: add com to trait
+
+------------------------------------------
+two ways to declare global var:
+$var = 1;
+$GLOBAL['var'] = 1;
+
+-------------------------------------------
+two ways to declare constatnt:
+
+define('const_name', 'const_value');
+const CONST_NAME = 'value';
+
+'define' can't be inside of class, use const instead
+
+
+
+
+
+
+
+
+
+
 
 
 

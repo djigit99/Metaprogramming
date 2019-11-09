@@ -1,62 +1,67 @@
 import enum
 
 
-class AccessModifier(enum.Enum):
-    public = 1
-    protected = 2
-    private = 3
+class Global:
 
-
-class Item:
-
-    def __init__(self, name, mod):
+    def __init__(self, name=""):
         self.name = name
-        self.mod = mod
 
     def get_name(self):
         return self.name
 
-    def get_mod(self):
-        return self.mod
+
+class Global_var(Global):
+
+    def __init__(self, name="var", type_=""):
+        super().__init__(name)
+        self.type_ = type_
 
 
-class Var(Item):
-    def __init__(self, name, mode, __type):
-        super().__init__(name, mode)
-        self.__type = __type
+class Global_const(Global):
+
+    def __init__(self, name="const", value=""):
+        super().__init__(name)
+        self.value = value
 
 
-class Const(Var):
+class Function(Global):
 
-    def __init__(self, name, mod, val):
-        super().__init__(name, mod)
-        self.val = val
+    parameters = []  # list of elements with type Global_var
 
-    def get_val(self):
-        return self.val
-
-
-class Function(Item):
-    parameters = []
-
-    def __init__(self, name, mod, parameters):
-        super().__init__(name, mod)
-        self.parameters = parameters
+    def __init__(self, name="func", return_type="", source_body=""):
+        super().__init__(name)
+        self.return_type = return_type
+        self.source_body = source_body
 
     def add_parameter(self, parameter):
         self.parameters.append(parameter)
 
+    def set_parameters(self, parameters):
+        self.parameters = parameters
+
     def get_parameters(self):
         return self.parameters
 
+    def set_return_type(self, return_type):
+        self.return_type = return_type
 
-class Class(Item):
+    def get_return_type(self):
+        return self.return_type
+
+    def set_source_body(self, source_body):
+        self.source_body = source_body
+
+    def get_source_body(self):
+        return self.source_body
+
+
+class Class(Global):
     constants = []
     properties = []
     methods = []
 
     def __init__(self, name, extends, implements):
-        super().__init__(name, AccessModifier.public)
+        super().__init__(name)
         self.extends = extends
         self.implements = implements
 
@@ -94,20 +99,30 @@ class Class(Item):
         return self.implements
 
 
-class Interface(Item):
+class Interface(Global):
     # Only public constants and public methods
     constants = []
     methods = []
     parents = []
 
+    def __init__(self, name, parents):
+        super().__init__(name)
+        self.parents = parents
+
     def add_constant(self, constant):
         self.constants.append(constant)
+
+    def get_constants(self):
+        return self.constants
+
+    def set_constants(self, constants):
+        self.constants = constants
 
     def add_method(self, method):
         self.methods.append(method)
 
-    def get_constants(self):
-        return self.constants
+    def set_methods(self, methods):
+        self.methods = methods
 
     def get_methods(self):
         return self.methods
@@ -115,11 +130,14 @@ class Interface(Item):
     def add_parent(self, parent):
         self.parents.append(parent)
 
+    def set_parents(self, parents):
+        self.parents = parents
+
     def get_parents(self):
         return self.parents
 
 
-class Trait(Item):
+class Trait(Global):
     constants = []
     properties = []
     methods = []
@@ -150,6 +168,78 @@ class Trait(Item):
 
     def get_methods_with_mode(self, mod):
         return [method for method in self.properties if method.get_mod() == mod]
+
+
+class AccessModifier(enum.Enum):
+    public = 1
+    protected = 2
+    private = 3
+
+
+class Item:
+
+    def __init__(self, name, mod):
+        self.name = name
+        self.mod = mod
+
+    def get_name(self):
+        return self.name
+
+    def get_mod(self):
+        return self.mod
+
+
+class Var(Item):
+
+    def __init__(self, name, mode, __type=""):
+        super().__init__(name, mode)
+        self.__type = __type
+
+    def set_type(self, __type):
+        self.__type = __type
+
+    def get_type(self):
+        return self.__type
+
+
+class Const(Var):
+
+    def __init__(self, name, mod, val):
+        super().__init__(name, mod)
+        self.val = val
+
+    def get_val(self):
+        return self.val
+
+
+class Method(Item):
+    parameters = []
+
+    def __init__(self, name, mod, return_type="", source_body=""):
+        super().__init__(name, mod)
+        self.return_type = return_type
+        self.source_body = source_body
+
+    def add_parameter(self, parameter):
+        self.parameters.append(parameter)
+
+    def set_parameters(self, parameters):
+        self.parameters = parameters
+
+    def get_parameters(self):
+        return self.parameters
+
+    def set_return_type(self, return_type):
+        self.return_type = return_type
+
+    def get_return_type(self):
+        return self.return_type
+
+    def set_source_body(self, source_body):
+        self.source_body = source_body
+
+    def get_source_body(self):
+        return self.source_body
 
 
 class Namespace:
