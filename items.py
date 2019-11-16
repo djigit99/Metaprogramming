@@ -28,7 +28,7 @@ class Function(Global):
 
     parameters = []  # list of elements with type Global_var
 
-    def __init__(self, name="func", return_type="", source_body=""):
+    def __init__(self, name="func", return_type="", source_body=[]):
         super().__init__(name)
         self.return_type = return_type
         self.source_body = source_body
@@ -60,7 +60,7 @@ class Class(Global):
     properties = []
     methods = []
 
-    def __init__(self, name, extends, implements):
+    def __init__(self, name, extends='', implements=''):
         super().__init__(name)
         self.extends = extends
         self.implements = implements
@@ -105,7 +105,7 @@ class Interface(Global):
     methods = []
     parents = []
 
-    def __init__(self, name, parents):
+    def __init__(self, name, parents=[]):
         super().__init__(name)
         self.parents = parents
 
@@ -138,24 +138,14 @@ class Interface(Global):
 
 
 class Trait(Global):
-    constants = []
     properties = []
     methods = []
-
-    def add_constant(self, constant):
-        self.constants.append(constant)
 
     def add_property(self, __property):
         self.properties.append(__property)
 
     def add_method(self, method):
         self.methods.append(method)
-
-    def get_constants(self):
-        return self.constants
-
-    def get_constants_with_mode(self, mod):
-        return [const for const in self.constants if const.get_mod() == mod]
 
     def get_properties(self):
         return self.properties
@@ -215,7 +205,7 @@ class Const(Var):
 class Method(Item):
     parameters = []
 
-    def __init__(self, name, mod, return_type="", source_body=""):
+    def __init__(self, name, mod, return_type="", source_body=[]):
         super().__init__(name, mod)
         self.return_type = return_type
         self.source_body = source_body

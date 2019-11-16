@@ -20,9 +20,16 @@ Q7: utility's keys
 Status: in process
 
 Q8: types of object: decide which types of object we want to parse
-Status: in process
+Status: closed
 
 Q9: comment design (should we use docblock ?)
 Status: closed
+
+Q10: process curly brackets(braces) after for/while loop in methods/functions
+Status: closed
+
+Q11: connect docblock with object
+Status: in process
+
 
 

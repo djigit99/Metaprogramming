@@ -14,6 +14,8 @@ from utils import *
 # IN_TRAIT - inside trait
 # OUT_OF_PHP - outside <?php  ?>
 # IN_DOCBLOCK - inside docblock
+# IN_FUNCTION - inside function
+# IN_METHOD - inside method
 class State(enum.Enum):
     GLOBAL = 1
     IN_CLASS = 2
@@ -21,6 +23,8 @@ class State(enum.Enum):
     IN_TRAIT = 4
     OUT_OF_PHP = 5
     IN_DOCBLOCK = 6
+    IN_FUNCTION = 7
+    IN_METHOD = 8
 
 
 class Parser:
@@ -37,29 +41,47 @@ class Parser:
         self.namespaces = []
 
         # name of namespace we stand inside at the moment
-        self.cur_namespace = '/'
+        self.cur_namespace = Namespace('/')
+
+        self.cur_function = Function('')
+
+        self.cur_class = Class('')
+
+        self.cur_interface = Interface('')
+
+        self.cur_trait = Trait('')
+
+        self.cur_method = Method('', AccessModifier.public)
+
+        self.braces_diff = 0
 
         if not os.path.isfile(filepath):
             logging.info("ERROR: " + "File path {} does not exist. Exiting...".format(filepath))
             sys.exit(-1)
 
         with open(filepath) as fp:
-            line = fp.readline()
-            print(line)
+            lines = fp.readlines()
 
-            # add only not empty lines
-            if line:
-                self.lines.append(line)
+            for line in lines:
+                # replace multiple whitespaces with a single whitespace
+                line = re.sub(' +', ' ', line)
+                # remove leading and trailing whitespaces
+                line = line.strip()
+                # add only not empty lines
+                if line:
+                    self.lines.append(line)
 
-    def todo(self):
+    def parse(self):
         state = self.state
         prev_state = state  # for comment
         docblock = []
+        source_block = []
+        line_num = 0
         for line in self.lines:
+            line_num += 1
             if state == State.OUT_OF_PHP:
                 if line.find("<?php") == 0:
-                    nm = parser_namespace(line)
-                    self.cur_namespace = Namespace(nm)
+                    self.cur_namespace = parser_namespace(line)
                     self.namespaces.append(self.cur_namespace)
                     prev_state = state
                     state = State.GLOBAL
@@ -72,6 +94,33 @@ class Parser:
                 elif line == "/**":
                     prev_state = state
                     state = State.IN_DOCBLOCK
+                elif is_var_line(line):
+                    self.cur_namespace.add_global_var(parser_var(line))
+                elif is_global_var_line(line):
+                    self.cur_namespace.add_global_var(parser_global_var(line))
+                elif is_define_line(line):
+                    self.cur_namespace.add_constants(parser_define(line))
+                elif is_const_line(line):
+                    self.cur_namespace.add_constants(parser_const(line))
+                elif is_function_line(line):
+                    self.cur_function = parser_function(line)
+                    self.cur_namespace.add_function(self.cur_function)
+                    self.braces_diff = 0
+                    state = State.IN_FUNCTION
+                elif is_class_line(line):
+                    self.cur_class = parser_class(line)
+                    self.cur_namespace.add_class(self.cur_class)
+                    state = State.IN_CLASS
+                elif is_interface_line(line):
+                    self.cur_interface = parser_interface(line)
+                    self.cur_namespace.add_interface(self.cur_interface)
+                    state = State.IN_INTERFACE
+                elif is_trait_line(line):
+                    self.cur_trait = parser_trait(line)
+                    self.cur_namespace.add_trait(self.cur_trait)
+                    state = State.IN_TRAIT
+                else:
+                    logging.info('BAD STYLE: line ' + str(line_num) + ' ' + line + ' is not recognized in global state')
             elif state == State.IN_DOCBLOCK:
                 if line == "*/":
                     state = prev_state
@@ -79,12 +128,94 @@ class Parser:
                     docblock.clear()
                 else:
                     docblock.append(line)
+            elif state == state.IN_FUNCTION:
+                if line[0] == '{':
+                    self.braces_diff += 1
+                elif line[0] == '}':
+                    self.braces_diff -= 1
+                else:
+                    pass
+                if self.braces_diff == 0:
+                    source_block.append(line)
+                    self.cur_function.set_source_body(source_block)
+                    print('---------------')
+                    print('Source block: ')
+                    for line in source_block:
+                        print(line)
+                    print('---------------')
+                    source_block.clear()
+                    state = State.GLOBAL
+                else:
+                    if is_global_var_line(line):
+                        self.cur_namespace.add_global_var(parser_global_var(line))
+                    source_block.append(line)
+            elif state == state.IN_CLASS:
+                if line[0] == '}':
+                    self.cur_class = Class('')
+                    state = state.GLOBAL
+                elif line == "/**":
+                    prev_state = state
+                    state = State.IN_DOCBLOCK
+                elif is_property_var_line(line):
+                    self.cur_class.add_property(parser_property_var(line))
+                elif is_property_const_line(line):
+                    self.cur_class.add_constant(parser_property_const(line))
+                elif is_method_line(line):
+                    prev_state = state
+                    state = state.IN_METHOD
+                    self.cur_method = parser_method(line)
+                    self.cur_class.add_method(self.cur_method)
+                    self.braces_diff = 0
+            elif state == state.IN_INTERFACE:
+                if line[0] == '}':
+                    self.cur_interface = Interface('')
+                    state = state.GLOBAL
+                elif line == "/**":
+                    prev_state = state
+                    state = State.IN_DOCBLOCK
+                elif is_property_const_line(line):
+                    self.cur_interface.add_constant(parser_property_const(line))
+                elif is_method_line(line):
+                    self.cur_interface.add_method(parser_method(line))
+                    self.braces_diff = 0
+            elif state == state.IN_TRAIT:
+                if line[0] == '}':
+                    self.cur_trait = Trait('')
+                    state = state.GLOBAL
+                elif line == "/**":
+                    prev_state = state
+                    state = State.IN_DOCBLOCK
+                elif is_property_var_line(line):
+                    self.cur_trait.add_property(parser_property_var(line))
+                elif is_method_line(line):
+                    prev_state = state
+                    state = state.IN_METHOD
+                    self.cur_method = parser_method(line)
+                    self.cur_trait.add_method(self.cur_method)
+                    self.braces_diff = 0
+            elif state == state.IN_METHOD:
+                if line[0] == '{':
+                    self.braces_diff += 1
+                elif line[0] == '}':
+                    self.braces_diff -= 1
+                else:
+                    pass
+                if self.braces_diff == 0:
+                    source_block.append(line)
+                    self.cur_method.set_source_body(source_block)
+                    print('---------------')
+                    print('Source block: ')
+                    for line in source_block:
+                        print(line)
+                    print('---------------')
+                    source_block.clear()
+                    state = prev_state
+                else:
+                    source_block.append(line)
+
 
 
 def parser_namespace(line):
-    # replace multiple whitespaces with a single whitespace
-    line = re.sub(' +', ' ', line)
-
     str = line[line.find("<?php") + 6:]
     if str.find("namespace") != -1:
         nm_name = str[str.find("namespace") + 10:]
@@ -92,23 +223,26 @@ def parser_namespace(line):
         nm_name.strip()
     else:
         nm_name = "/"
-    return nm_name
+    return Namespace(nm_name)
 
 
 def parser_docblock(docblock):
-    if not docblock:
-        logging.info("BAD STYLE: no docblock summary")
-        logging.info("BAD STYLE: no docblock description")
-        logging.info("BAD STYLE: no docblock tag")
-        return
 
     true_docblock = []  # true_docblock is a docblock without empty lines
 
     # skip empty lines
     for line in docblock:
         pos = line.find('*') + 1
-        if line[pos:]:
-            true_docblock.append(line)
+        nline = line[pos:]
+        nline = nline.strip()
+        if nline:
+            true_docblock.append(nline)
+
+    if not true_docblock:
+        logging.info("BAD STYLE: no docblock summary")
+        logging.info("BAD STYLE: no docblock description")
+        logging.info("BAD STYLE: no docblock tag")
+        return
 
     print("--------------")
     print("true_docblock: ")
@@ -122,7 +256,6 @@ def parser_docblock(docblock):
         summary = ""
     else:
         summary = true_docblock[0]
-        summary = summary[summary.find('*') + 2:]
         logging.info("GOOD STYLE: docblock summary is " + summary)
         true_docblock.pop(0)  # remove summary
 
@@ -130,7 +263,6 @@ def parser_docblock(docblock):
     description = ""
     while len(true_docblock) and not is_tag_line(true_docblock[0]):
         desc = true_docblock[0]
-        desc = desc[desc.find('*') + 2:]
         description += desc
         true_docblock.pop(0)
 
@@ -144,7 +276,6 @@ def parser_docblock(docblock):
         if not is_tag_line(line):
             logging.info("BAD STYLE: should be tag line")
         else:
-            line = line[line.find('*') + 2:]
             tag = parser_tag(line)
             if not tag:
                 logging.info("Error: can't parse the tag")
@@ -175,8 +306,6 @@ def test_parser_docblock():
 
 # required: 'str' consists of @tag info only
 def parser_tag(str):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
     if str.find("@author") == 0:
         author_name = ""
         author_email = ""
@@ -322,7 +451,7 @@ def parser_global_var(str, type_=""):
 
     var__pos = str.find('[') + 2
     var_end = str.find(']') - 1
-    var_name =  str[var__pos:var_end]
+    var_name = str[var__pos:var_end]
     print(var_name)
     return Global_var(var_name, type_)
 
@@ -336,11 +465,6 @@ def test_parser_global_var():
 # required: one whitespace after ,
 # required: no whitespace inside ()
 def parser_define(str):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    #remove leading and trailing whitespaces
-    str = str.strip()
-
     const_name = str[str.find("(") + 2:str.find(",") - 1]
     const_value = str[str.find(',') + 2:str.find(")")]
     print(const_name)
@@ -357,11 +481,6 @@ def test_parser_define():
 # required: one whitespace after const
 # required : two whitespaces (before and after = )
 def parser_const(str):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    # remove leading and trailing whitespaces
-    str = str.strip()
-
     const_name = str[str.find("const") + 6:str.find("=") - 1]
     const_value = str[str.find('=') + 2:str.find(";")]
     print(const_name)
@@ -379,10 +498,6 @@ def test_parser_const():
 # required: one whitespace between 'function' and function name
 # required: no whitespace between function name and '('
 def parser_function(str, return_type=""):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    # remove leading and trailing whitespaces
-    str = str.strip()
 
     function_name = str[str.find("function") + 9:str.find('(')]
     print(function_name)
@@ -422,10 +537,6 @@ def test_parser_function():
 # required: one whitespace between class name and 'extends'/'implements'
 # required: one whitespace between 'extends'/'implements' and class/interface name
 def parser_class(str):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    # remove leading and trailing whitespaces
-    str = str.strip()
 
     extends_name = implements_name = ""
     if str.find("extends") != -1:
@@ -459,10 +570,6 @@ def test_parser_class():
 # required: one whitespace between 'extends' and interface name
 # required: one whitespace between comma and interface name
 def parser_interface(str):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    # remove leading and trailing whitespaces
-    str = str.strip()
 
     parents = []
 
@@ -493,10 +600,6 @@ def test_parser_interface():
 # @param str string with trait
 # required: one whitespace between 'trait' and trait name
 def parser_trait(str):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    # remove leading and trailing whitespaces
-    str = str.strip()
 
     trait_name = str[str.find("trait") + 6:]
     print("Trait name: " + trait_name)
@@ -509,10 +612,6 @@ def test_parser_trait():
 
 
 def parser_property_var(str):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    # remove leading and trailing whitespaces
-    str = str.strip()
 
     # remove static keyword if exists
     if re.match(r'static ', str):
@@ -567,10 +666,6 @@ def test_parser_property_var():
 
 
 def parser_property_const(str):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    # remove leading and trailing whitespaces
-    str = str.strip()
 
     if re.match('const ', str) or re.match('public ', str):
         const_name = str[str.find('const')+6:str.find('=') - 1]
@@ -605,11 +700,7 @@ def test_parser_property_const():
     const = "protected static const b = 1;"
 
 
-def parser_property_method(str, return_type=""):
-    # replace multiple whitespaces with a single whitespace
-    str = re.sub(' +', ' ', str)
-    # remove leading and trailing whitespaces
-    str = str.strip()
+def parser_method(str, return_type=""):
 
     am = AccessModifier.public
 
@@ -651,27 +742,31 @@ def parser_property_method(str, return_type=""):
     return meth
 
 
-def test_parser_property_method():
+def test_parser_method():
 
     method = "  function method($var1)"  # it's public
-    parser_property_method(method)
+    parser_method(method)
 
     method = "  public function method()"
-    parser_property_method(method)
+    parser_method(method)
 
     method = "  protected function method($var1, $var2, $var3)"
-    parser_property_method(method)
+    parser_method(method)
 
     method = " private function method($var2, $var1)"
-    parser_property_method(method)
+    parser_method(method)
 
     method = "private static function method($var)"
-    parser_property_method(method)
+    parser_method(method)
 
 
 def main():
+    with open('myapp.log','w') as f:
+        pass
     logging.basicConfig(filename='myapp.log', level=logging.INFO)
-    test_parser_property_method()
+    ps = Parser(r'D:\recFolder\f1.php')
+
+    ps.parse()
 
 
 if __name__ == '__main__':
