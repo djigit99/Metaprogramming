@@ -16,6 +16,12 @@ class Global_var(Global):
         super().__init__(name)
         self.type_ = type_
 
+    def get_type(self):
+        return self.type_
+
+    def set_type(self, type_):
+        self.type_ = type_
+
 
 class Global_const(Global):
 
@@ -25,19 +31,23 @@ class Global_const(Global):
 
 
 class Function(Global):
-
-    parameters = []  # list of elements with type Global_var
-
     def __init__(self, name="func", return_type="", source_body=[]):
         super().__init__(name)
         self.return_type = return_type
         self.source_body = source_body
+        self.parameters = []  # list of elements with type Global_var
 
     def add_parameter(self, parameter):
         self.parameters.append(parameter)
 
     def set_parameters(self, parameters):
         self.parameters = parameters
+
+    def find_by_param_name(self, param_name):
+        for param in self.parameters:
+            if param.get_name() == param_name:
+                return param
+        return None
 
     def get_parameters(self):
         return self.parameters
@@ -54,16 +64,28 @@ class Function(Global):
     def get_source_body(self):
         return self.source_body
 
+    def process_docblock(self, docblock):
+
+        tg_return = docblock.get_tags_by_name('@return')
+        if tg_return is not None:
+            self.return_type = tg_return[0].get_type()
+
+        tgs_param = docblock.get_tags_by_name('@param')
+        if tgs_param is not None:
+            for tg_param in tgs_param:
+                param = self.find_by_param_name(tg_param.get_name())
+                if param is not None:
+                    param.set_type(tg_param.get_type())
+
 
 class Class(Global):
-    constants = []
-    properties = []
-    methods = []
-
     def __init__(self, name, extends='', implements=''):
         super().__init__(name)
         self.extends = extends
         self.implements = implements
+        self.constants = []
+        self.properties = []
+        self.methods = []
 
     def add_constant(self, constant):
         self.constants.append(constant)
@@ -100,14 +122,13 @@ class Class(Global):
 
 
 class Interface(Global):
-    # Only public constants and public methods
-    constants = []
-    methods = []
-    parents = []
-
     def __init__(self, name, parents=[]):
         super().__init__(name)
         self.parents = parents
+        # Only public constants and public methods
+        self.constants = []
+        self.methods = []
+        self.parents = []
 
     def add_constant(self, constant):
         self.constants.append(constant)
@@ -138,8 +159,11 @@ class Interface(Global):
 
 
 class Trait(Global):
-    properties = []
-    methods = []
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.properties = []
+        self.methods = []
 
     def add_property(self, __property):
         self.properties.append(__property)
@@ -179,7 +203,7 @@ class Item:
         return self.mod
 
 
-class Var(Item):
+class Property(Item):
 
     def __init__(self, name, mode, __type=""):
         super().__init__(name, mode)
@@ -191,8 +215,16 @@ class Var(Item):
     def get_type(self):
         return self.__type
 
+    def process_docblock(self, docblock):
 
-class Const(Var):
+        tgs_var = docblock.get_tags_by_name('@var')
+        if tgs_var is not None:
+            for tg_var in tgs_var:
+                if tg_var.get_name() == self.get_name():
+                    self.set_type(tg_var.get_type())
+
+
+class Const(Property):
 
     def __init__(self, name, mod, val):
         super().__init__(name, mod)
@@ -203,12 +235,11 @@ class Const(Var):
 
 
 class Method(Item):
-    parameters = []
-
     def __init__(self, name, mod, return_type="", source_body=[]):
         super().__init__(name, mod)
         self.return_type = return_type
         self.source_body = source_body
+        self.parameters = []
 
     def add_parameter(self, parameter):
         self.parameters.append(parameter)
@@ -218,6 +249,12 @@ class Method(Item):
 
     def get_parameters(self):
         return self.parameters
+
+    def find_by_param_name(self, param_name):
+        for param in self.parameters:
+            if param.get_name() == param_name:
+                return param
+        return None
 
     def set_return_type(self, return_type):
         self.return_type = return_type
@@ -231,18 +268,34 @@ class Method(Item):
     def get_source_body(self):
         return self.source_body
 
+    def process_docblock(self, docblock):
+
+        tg_return = docblock.get_tags_by_name('@return')
+        if tg_return is not None:
+            self.return_type = tg_return[0].get_type()
+
+        tgs_param = docblock.get_tags_by_name('@param')
+        if tgs_param is not None:
+            for tg_param in tgs_param:
+                param = self.find_by_param_name(tg_param.get_name())
+                if param is not None:
+                    param.set_type(tg_param.get_type())
+
 
 class Namespace:
-    nm_name = ""
     global_vars = []
     constants = []
-    functions = []
-    classes = []
-    interfaces = []
-    traits = []
 
     def __init__(self, name):
         self.nm_name = name
+        self.child_namespaces = []
+        self.functions = []
+        self.classes = []
+        self.interfaces = []
+        self.traits = []
+
+    def get_name(self):
+        return self.nm_name
 
     def add_global_var(self, var):
         self.global_vars.append(var)
@@ -266,7 +319,7 @@ class Namespace:
         self.classes.append(__class)
 
     def get_classes(self):
-        return  self.classes
+        return self.classes
 
     def add_interface(self, interface):
         self.interfaces.append(interface)
@@ -280,10 +333,59 @@ class Namespace:
     def get_traits(self):
         return self.traits
 
+    def get_child_namespaces(self):
+        return self.child_namespaces
+
+    def get_namespace_name_ind(self, nm_name):
+        ind = 0
+        for nm in self.child_namespaces:
+            if nm.get_name() == nm_name:
+                return ind
+            else:
+                ind += 1
+        return None
+
+    def add_namespace(self, nm_name):
+        nms = str.split(nm_name, '\\')
+        cur_nm = self
+        for nm in nms:
+            try:
+                tmp_nm_ind = cur_nm.get_namespace_name_ind(nm)
+            except ValueError:
+                tmp_nm_ind = None
+            if tmp_nm_ind is not None:
+                cur_nm = cur_nm.get_child_namespaces()[tmp_nm_ind]
+            else:
+                cur_nm.get_child_namespaces().append(Namespace(nm))
+                cur_nm = cur_nm.get_child_namespaces()[len(cur_nm.child_namespaces) - 1]
+        return cur_nm
+
+    def get_namespace(self, nm_name):
+        nms = str.split(nm_name, '/')
+        cur_nm = self
+        for nm in nms:
+            try:
+                tmp_nm_ind = cur_nm.get_namespace_name_ind(nm)
+            except ValueError:
+                tmp_nm_ind = None
+            if tmp_nm_ind is not None:
+                cur_nm = cur_nm.get_child_namespaces()[tmp_nm_ind]
+            else:
+                return
+        return cur_nm
+
 
 if __name__ == '__main__':
-    my_function = Function('func', AccessModifier.public,
-                           [Var('var1', AccessModifier.private), Var('var2', AccessModifier.protected)])
-    li = [var for var in my_function.get_parameters() if var.get_mod() == AccessModifier.private]
-    for i in li:
-        print(i.get_name())
+    # my_function = Function('func', AccessModifier.public,
+    #                      [Var('var1', AccessModifier.private), Var('var2', AccessModifier.protected)])
+    # li = [var for var in my_function.get_parameters() if var.get_mod() == AccessModifier.private]
+    # for i in li:
+    #   print(i.get_name())
+    nm = Namespace('/')
+    nm.add_namespace('nm/mn/fuck')
+    nm.add_namespace('nm/kz')
+    ans = nm.get_namespace('nm/kz')
+    if ans:
+        print(ans.nm_name)
+    else:
+        print('Not found')
