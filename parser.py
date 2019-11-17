@@ -40,20 +40,35 @@ class Parser:
         # in case the file includes more than one namespace
         self.namespaces = []
 
-        # name of namespace we stand inside at the moment
-        self.cur_namespace = Namespace('/')
+        # global namespace
+        self.root_namespace = Namespace('/')
 
+        # name of namespace we stand inside at the moment
+        self.cur_namespace = self.root_namespace
+
+        # name of function we stand inside at the moment
         self.cur_function = Function('')
 
+        # name of class we stand inside at the moment
         self.cur_class = Class('')
 
+        # name of interface we stand inside at the moment
         self.cur_interface = Interface('')
 
+        # name of trait we stand inside at the moment
         self.cur_trait = Trait('')
 
+        # name of method we stand inside at the moment
         self.cur_method = Method('', AccessModifier.public)
 
+        # the difference between '{' and '}' numbers
         self.braces_diff = 0
+
+        # whether the previous object is docblock
+        self.is_prev_docblock = False
+
+        # whether the docblock is the first-level docblock
+        self.is_first_level_docblock = True
 
         if not os.path.isfile(filepath):
             logging.info("ERROR: " + "File path {} does not exist. Exiting...".format(filepath))
@@ -81,8 +96,8 @@ class Parser:
             line_num += 1
             if state == State.OUT_OF_PHP:
                 if line.find("<?php") == 0:
-                    self.cur_namespace = parser_namespace(line)
-                    self.namespaces.append(self.cur_namespace)
+                    if is_namespace_line(line):
+                        self.cur_namespace = self.root_namespace.add_namespace(parser_namespace(line))
                     prev_state = state
                     state = State.GLOBAL
                 else:
@@ -94,14 +109,16 @@ class Parser:
                 elif line == "/**":
                     prev_state = state
                     state = State.IN_DOCBLOCK
+                elif is_namespace_line(line):
+                    self.cur_namespace = self.root_namespace.add_namespace(parser_namespace(line))
                 elif is_var_line(line):
-                    self.cur_namespace.add_global_var(parser_var(line))
+                    self.root_namespace.add_global_var(parser_var(line))
                 elif is_global_var_line(line):
-                    self.cur_namespace.add_global_var(parser_global_var(line))
+                    self.root_namespace.add_global_var(parser_global_var(line))
                 elif is_define_line(line):
-                    self.cur_namespace.add_constants(parser_define(line))
+                    self.root_namespace.add_constants(parser_define(line))
                 elif is_const_line(line):
-                    self.cur_namespace.add_constants(parser_const(line))
+                    self.root_namespace.add_constants(parser_const(line))
                 elif is_function_line(line):
                     self.cur_function = parser_function(line)
                     self.cur_namespace.add_function(self.cur_function)
@@ -120,12 +137,12 @@ class Parser:
                     self.cur_namespace.add_trait(self.cur_trait)
                     state = State.IN_TRAIT
                 else:
-                    logging.info('BAD STYLE: line ' + str(line_num) + ' ' + line + ' is not recognized in global state')
+                    logging.info('WARN: line ' + str(line_num) + ' ' + line + ' is not recognized in global state')
             elif state == State.IN_DOCBLOCK:
                 if line == "*/":
                     state = prev_state
                     parser_docblock(docblock)
-                    docblock.clear()
+                    docblock = []
                 else:
                     docblock.append(line)
             elif state == state.IN_FUNCTION:
@@ -143,11 +160,11 @@ class Parser:
                     for line in source_block:
                         print(line)
                     print('---------------')
-                    source_block.clear()
+                    source_block = []
                     state = State.GLOBAL
                 else:
                     if is_global_var_line(line):
-                        self.cur_namespace.add_global_var(parser_global_var(line))
+                        self.root_namespace.add_global_var(parser_global_var(line))
                     source_block.append(line)
             elif state == state.IN_CLASS:
                 if line[0] == '}':
@@ -208,22 +225,20 @@ class Parser:
                     for line in source_block:
                         print(line)
                     print('---------------')
-                    source_block.clear()
+                    source_block = []
                     state = prev_state
                 else:
                     source_block.append(line)
-
+        return self.root_namespace
 
 
 def parser_namespace(line):
-    str = line[line.find("<?php") + 6:]
-    if str.find("namespace") != -1:
-        nm_name = str[str.find("namespace") + 10:]
-        nm_name = nm_name[:-1]  # delete last character ';'
-        nm_name.strip()
-    else:
-        nm_name = "/"
-    return Namespace(nm_name)
+    if line.find("<?php") != -1:
+        line = line[line.find("<?php") + 6:]
+    nm_name = line[line.find("namespace") + 10:]
+    nm_name = nm_name[:-1]  # delete last character ';'
+    nm_name.strip()
+    return nm_name
 
 
 def parser_docblock(docblock):
@@ -689,7 +704,7 @@ def parser_property_const(str):
 
 def test_parser_property_const():
 
-    const = "const a = 1;" # it's public
+    const = "const a = 1;"  # it's public
 
     const = "public const a = 'string';  "
 
@@ -761,12 +776,13 @@ def test_parser_method():
 
 
 def main():
-    with open('myapp.log','w') as f:
+    with open('myapp.log', 'w') as f:
         pass
     logging.basicConfig(filename='myapp.log', level=logging.INFO)
-    ps = Parser(r'D:\recFolder\f1.php')
+    ps = Parser(r'D:\recFolder\f2.php')
 
-    ps.parse()
+    nm = ps.parse()
+    pass
 
 
 if __name__ == '__main__':
