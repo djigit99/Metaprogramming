@@ -31,5 +31,14 @@ Status: closed
 Q11: connect docblock with object
 Status: in process
 
+Q12: add include feature
+Status: open
+
+Q13: multiple var declaration
+Status: open
+
+Q14: add ? into html table cell in order to describe an object goal
+Status: open
+
 
 
