@@ -283,16 +283,18 @@ class Method(Item):
 
 
 class Namespace:
-    global_vars = []
-    constants = []
 
     def __init__(self, name):
         self.nm_name = name
+        self.global_vars = []
+        self.constants = []
         self.child_namespaces = []
         self.functions = []
         self.classes = []
         self.interfaces = []
         self.traits = []
+        self.file_author_name = ''
+        self.file_author_email = ''
 
     def get_name(self):
         return self.nm_name
@@ -373,6 +375,12 @@ class Namespace:
             else:
                 return
         return cur_nm
+
+    def process_docblock(self, docblock):
+        tg_author = docblock.get_tags_by_name('@author')
+        if tg_author is not None:
+            self.file_author_name = tg_author[0].get_author_name()
+            self.file_author_email = tg_author[0].get_author_email()
 
 
 if __name__ == '__main__':
