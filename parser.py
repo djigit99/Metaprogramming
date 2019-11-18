@@ -70,6 +70,8 @@ class Parser:
         # whether the docblock is the first-level docblock
         self.is_first_level_docblock = True
 
+        self.cur_docblock = Docblock
+
         if not os.path.isfile(filepath):
             logging.info("ERROR: " + "File path {} does not exist. Exiting...".format(filepath))
             sys.exit(-1)
@@ -110,29 +112,39 @@ class Parser:
                     prev_state = state
                     state = State.IN_DOCBLOCK
                 elif is_namespace_line(line):
+                    self.is_first_level_docblock = False
+                    self.is_prev_docblock = False
                     self.cur_namespace = self.root_namespace.add_namespace(parser_namespace(line))
-                elif is_var_line(line):
-                    self.root_namespace.add_global_var(parser_var(line))
                 elif is_global_var_line(line):
+                    self.is_first_level_docblock = False
                     self.root_namespace.add_global_var(parser_global_var(line))
+                elif is_var_line(line):
+                    self.is_first_level_docblock = False
+                    self.root_namespace.add_global_var(parser_var(line))
                 elif is_define_line(line):
+                    self.is_first_level_docblock = False
                     self.root_namespace.add_constants(parser_define(line))
                 elif is_const_line(line):
+                    self.is_first_level_docblock = False
                     self.root_namespace.add_constants(parser_const(line))
                 elif is_function_line(line):
+                    self.is_first_level_docblock = False
                     self.cur_function = parser_function(line)
                     self.cur_namespace.add_function(self.cur_function)
                     self.braces_diff = 0
                     state = State.IN_FUNCTION
                 elif is_class_line(line):
+                    self.is_first_level_docblock = False
                     self.cur_class = parser_class(line)
                     self.cur_namespace.add_class(self.cur_class)
                     state = State.IN_CLASS
                 elif is_interface_line(line):
+                    self.is_first_level_docblock = False
                     self.cur_interface = parser_interface(line)
                     self.cur_namespace.add_interface(self.cur_interface)
                     state = State.IN_INTERFACE
                 elif is_trait_line(line):
+                    self.is_first_level_docblock = False
                     self.cur_trait = parser_trait(line)
                     self.cur_namespace.add_trait(self.cur_trait)
                     state = State.IN_TRAIT
@@ -140,9 +152,13 @@ class Parser:
                     logging.info('WARN: line ' + str(line_num) + ' ' + line + ' is not recognized in global state')
             elif state == State.IN_DOCBLOCK:
                 if line == "*/":
+                    if self.is_first_level_docblock and prev_state == State.GLOBAL and self.is_prev_docblock:
+                        self.root_namespace.process_docblock(self.cur_docblock)
+                        self.is_first_level_docblock = False
                     state = prev_state
-                    parser_docblock(docblock)
+                    self.cur_docblock = parser_docblock(docblock)
                     docblock = []
+                    self.is_prev_docblock = True
                 else:
                     docblock.append(line)
             elif state == state.IN_FUNCTION:
@@ -155,13 +171,11 @@ class Parser:
                 if self.braces_diff == 0:
                     source_block.append(line)
                     self.cur_function.set_source_body(source_block)
-                    print('---------------')
-                    print('Source block: ')
-                    for line in source_block:
-                        print(line)
-                    print('---------------')
+                    if self.is_prev_docblock:
+                        self.cur_function.process_docblock(self.cur_docblock)
                     source_block = []
                     state = State.GLOBAL
+                    self.is_prev_docblock = False
                 else:
                     if is_global_var_line(line):
                         self.root_namespace.add_global_var(parser_global_var(line))
@@ -170,6 +184,7 @@ class Parser:
                 if line[0] == '}':
                     self.cur_class = Class('')
                     state = state.GLOBAL
+                    self.is_prev_docblock = False
                 elif line == "/**":
                     prev_state = state
                     state = State.IN_DOCBLOCK
@@ -187,6 +202,7 @@ class Parser:
                 if line[0] == '}':
                     self.cur_interface = Interface('')
                     state = state.GLOBAL
+                    self.is_prev_docblock = False
                 elif line == "/**":
                     prev_state = state
                     state = State.IN_DOCBLOCK
@@ -199,6 +215,7 @@ class Parser:
                 if line[0] == '}':
                     self.cur_trait = Trait('')
                     state = state.GLOBAL
+                    self.is_prev_docblock = False
                 elif line == "/**":
                     prev_state = state
                     state = State.IN_DOCBLOCK
@@ -227,6 +244,7 @@ class Parser:
                     print('---------------')
                     source_block = []
                     state = prev_state
+                    self.is_prev_docblock = False
                 else:
                     source_block.append(line)
         return self.root_namespace
@@ -298,6 +316,7 @@ def parser_docblock(docblock):
                 tags.append(tag)
                 logging.info("GOOD STYLE: tag parsed")
 
+    pass
     return Docblock(summary, description, tags)
 
 
@@ -354,22 +373,31 @@ def parser_tag(str):
             return
         logging.info("GOOD STYLE: Tag_Package parsed")
         return Tag_Package(package)
-    elif str.find("@global") == 0:
-        type_pos = str.find("global") + 7
+    elif str.find("@var") == 0:
+        type_pos = str.find("var") + 4
         str = str[type_pos:]
         if str.find(' ') != -1:
-            info_pos = str.find(' ')
+            var_name_pos = str.find(' ')
         else:
-            info_pos = len(str)
-        __type = str[:info_pos]
+            var_name_pos = len(str)
+        __type = str[:var_name_pos]
         if not len(__type):
-            logging.info("BAD STYLE: global missed")
+            logging.info("BAD STYLE: var missed")
             return
-        info = str[info_pos:]
-        if not len(info):
-            logging.info("BAD STYLE: no global information")
-        logging.info("GOOD STYLE: Tag_Global parsed")
-        return Tag_Global(__type, info)
+        str = str[var_name_pos+1:]
+        if str.find(' ') != -1:
+            var_desc_pos = str.find(' ')
+        else:
+            var_desc_pos = len(str)
+        var_name = str[:var_desc_pos]
+        if not len(var_name):
+            logging.info("BAD STYLE: var name missed")
+            return
+        desc = str[var_desc_pos+1:]
+        if not len(desc):
+            logging.info("BAD STYLE: no var description")
+        logging.info("GOOD STYLE: Tag_Var parsed")
+        return Tag_Var(var_name, __type, desc)
     elif str.find("@name") == 0:
         pos_name = str.find('name') + 5
         name = str[pos_name:]
@@ -394,7 +422,7 @@ def parser_tag(str):
             pos_description = str.find(' ')
         else:
             pos_description = len(str)
-        name = str[:pos_description]
+        name = str[1:pos_description]
         if not len(name):
             logging.info("BAD STYLE: no param varname")
         str = str[pos_description + 1:]
@@ -528,7 +556,7 @@ def parser_function(str, return_type=""):
         else:
             pos_var_end = str.find(')')
 
-        parameters.append(str[str.find('$')+1:pos_var_end])
+        parameters.append(Global_var(str[str.find('$')+1:pos_var_end]))
         str = str[pos_var_end + 1:]
 
     print('------------')
@@ -640,21 +668,21 @@ def parser_property_var(str):
         else:
             var_name = str[str.find('$')+1:str.find(';')]
         print('public ' + var_name)
-        return Var(var_name, AccessModifier.public)
+        return Property(var_name, AccessModifier.public)
     elif str.find('protected') != -1:
         if str.find('=') != -1:
             var_name = str[str.find('$')+1:str.find('=') - 1]
         else:
             var_name = str[str.find('$')+1:str.find(';')]
         print('protected ' + var_name)
-        return Var(var_name, AccessModifier.protected)
+        return Property(var_name, AccessModifier.protected)
     elif str.find('private') != -1:
         if str.find('=') != -1:
             var_name = str[str.find('$')+1:str.find('=') - 1]
         else:
             var_name = str[str.find('$')+1:str.find(';')]
         print('private ' + var_name)
-        return Var(var_name, AccessModifier.private)
+        return Property(var_name, AccessModifier.private)
     else:
         logging.info("BAD STYLE: property_var not found")
 
@@ -783,7 +811,6 @@ def main():
 
     nm = ps.parse()
     pass
-
 
 if __name__ == '__main__':
     main()
