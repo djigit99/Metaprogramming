@@ -6,12 +6,16 @@ def is_tag_line(line):
     return re.match('@[a-z]+', line)
 
 
+def is_namespace_line(line):
+    return re.match('(<\?php\s)?namespace\s([a-zA-Z]+[\\\\]?)+', line)
+
+
 def is_var_line(line):
     return re.match('[$][a-zA-Z_][\w]*', line)
 
 
 def is_global_var_line(line):
-    return re.match('[$]GLOBALS[\'[a-zA-Z_][\w]*\']', line)
+    return re.match('[$]GLOBALS\[\'[a-zA-Z_][\w]*\'\]', line)
 
 
 def is_define_line(line):
