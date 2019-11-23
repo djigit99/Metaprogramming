@@ -1,0 +1,18 @@
+INFO:root:GOOD STYLE: docblock summary is Title
+INFO:root:GOOD STYLE: docblock description is description
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is MyClass title
+INFO:root:GOOD STYLE: docblock description is MyClassdescription
+INFO:root:GOOD STYLE: Tag_Package parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no author email
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: Tag_Version parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:ERROR: tag not found
+INFO:root:Error: can't parse the tag
+INFO:root:ERROR: tag not found
+INFO:root:Error: can't parse the tag
+INFO:root:WARN: line 36 } is not recognized in global state

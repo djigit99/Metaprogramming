@@ -811,6 +811,3 @@ def main():
 
     nm = ps.parse()
     pass
-
-if __name__ == '__main__':
-    main()

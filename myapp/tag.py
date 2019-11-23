@@ -64,24 +64,31 @@ class Tag_Name(Tag):
     def get_name(self):
         return self.name
 
-class Tag_Global(Tag):
+class Tag_Var(Tag):
 
-    def __init__(self, type, global_decl):
-        super().__init__("@global")
-        self.type = type
-        self.global_decl = global_decl
+    def __init__(self, name, type__, description):
+        super().__init__("@var")
+        self.name = name
+        self.type__ = type__
+        self.description = description
 
-    def set_type(self, type):
-        self.type = type
+    def set_name(self, name):
+        self.name = name
+
+    def get_name(self):
+        return self.name
+
+    def set_type(self, type__):
+        self.type__ = type__
 
     def get_type(self):
-        return self.type
+        return self.type__
 
-    def set_global_decl(self, global_decl):
-        self.global_decl = global_decl
+    def set_description(self, description):
+        self.description = description
 
-    def get_global_decl(self):
-        return self.get_global_decl()
+    def get_description(self):
+        return self.description
 
 
 class Tag_Param(Tag):
