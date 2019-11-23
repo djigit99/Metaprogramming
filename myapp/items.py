@@ -3,11 +3,19 @@ import enum
 
 class Global:
 
-    def __init__(self, name=""):
+    def __init__(self, name="", title="", description=""):
         self.name = name
+        self.title = title
+        self.description = description
 
     def get_name(self):
         return self.name
+
+    def get_title(self):
+        return self.title
+
+    def get_description(self):
+        return self.description
 
 
 class Global_var(Global):
@@ -27,6 +35,12 @@ class Global_const(Global):
 
     def __init__(self, name="const", value=""):
         super().__init__(name)
+        self.value = value
+
+    def get_value(self):
+        return self.value
+
+    def set_value(self, value):
         self.value = value
 
 
@@ -77,15 +91,25 @@ class Function(Global):
                 if param is not None:
                     param.set_type(tg_param.get_type())
 
+    def source_body_html(self):
+        sb = ""
+        for ln in self.source_body:
+            sb += ln + '<br>'
+        return sb
+
 
 class Class(Global):
-    def __init__(self, name, extends='', implements=''):
+    def __init__(self, name, namespace, extends='', implements=''):
         super().__init__(name)
+        self.namespace = namespace
         self.extends = extends
         self.implements = implements
         self.constants = []
         self.properties = []
         self.methods = []
+
+    def get_namespace(self):
+        return self.namespace
 
     def add_constant(self, constant):
         self.constants.append(constant)
@@ -112,7 +136,7 @@ class Class(Global):
         return self.methods
 
     def get_methods_with_mode(self, mod):
-        return [method for method in self.properties if method.get_mod() == mod]
+        return [method for method in self.methods if method.get_mod() == mod]
 
     def get_inherited_class(self):
         return self.extends
@@ -122,13 +146,16 @@ class Class(Global):
 
 
 class Interface(Global):
-    def __init__(self, name, parents=[]):
+    def __init__(self, name, namespace, parents=[]):
         super().__init__(name)
+        self.namespace = namespace
         self.parents = parents
         # Only public constants and public methods
         self.constants = []
         self.methods = []
-        self.parents = []
+
+    def get_namespace(self):
+        return self.namespace
 
     def add_constant(self, constant):
         self.constants.append(constant)
@@ -160,10 +187,14 @@ class Interface(Global):
 
 class Trait(Global):
 
-    def __init__(self, name):
+    def __init__(self, name, namespace):
         super().__init__(name)
+        self.namespace = namespace
         self.properties = []
         self.methods = []
+
+    def get_namespace(self):
+        return self.namespace
 
     def add_property(self, __property):
         self.properties.append(__property)
@@ -190,14 +221,11 @@ class AccessModifier(enum.Enum):
     private = 3
 
 
-class Item:
+class Item(Global):
 
-    def __init__(self, name, mod):
-        self.name = name
+    def __init__(self, name, mod, title="", description=""):
+        super().__init__(name, title, description)
         self.mod = mod
-
-    def get_name(self):
-        return self.name
 
     def get_mod(self):
         return self.mod
@@ -224,14 +252,14 @@ class Property(Item):
                     self.set_type(tg_var.get_type())
 
 
-class Const(Property):
+class Const(Item):
 
-    def __init__(self, name, mod, val):
+    def __init__(self, name, mod, value):
         super().__init__(name, mod)
-        self.val = val
+        self.value = value
 
-    def get_val(self):
-        return self.val
+    def get_value(self):
+        return self.value
 
 
 class Method(Item):
@@ -281,11 +309,20 @@ class Method(Item):
                 if param is not None:
                     param.set_type(tg_param.get_type())
 
+    def source_body_html(self):
+        sb = ""
+        for ln in self.source_body:
+            sb += ln + '<br>'
+        return sb
 
-class Namespace:
 
-    def __init__(self, name):
-        self.nm_name = name
+class Namespace(Global):
+
+    def __init__(self, name, parent_namespace=None, filename='', curpath=''):
+        super().__init__(name)
+        self.parent_namespace = parent_namespace
+        self.curpath = curpath
+        self.filename = filename
         self.global_vars = []
         self.constants = []
         self.child_namespaces = []
@@ -296,8 +333,30 @@ class Namespace:
         self.file_author_name = ''
         self.file_author_email = ''
 
-    def get_name(self):
-        return self.nm_name
+    def get_parent_namespace(self):
+        return self.parent_namespace
+
+    def get_root_namespace(self):
+        cur_nm = self
+        while cur_nm.parent_namespace is not None:
+            cur_nm = cur_nm.parent_namespace
+        return cur_nm
+
+    def get_curpath(self):
+        return self.curpath
+
+    def get_filename(self):
+        return self.filename
+
+    def get_link(self):
+        cur_nm = self
+        link = ''
+        while cur_nm is not None:
+            cur_name = 'namespaces' + '\\'
+            cur_name += cur_nm.get_name() if cur_nm.get_name() != '/' else 'root_nm'
+            link = ('\\' if cur_nm.parent_namespace is not None and cur_nm.parent_namespace.get_name() != '' else '') + cur_name + link
+            cur_nm = cur_nm.parent_namespace
+        return link
 
     def add_global_var(self, var):
         self.global_vars.append(var)
@@ -358,7 +417,7 @@ class Namespace:
             if tmp_nm_ind is not None:
                 cur_nm = cur_nm.get_child_namespaces()[tmp_nm_ind]
             else:
-                cur_nm.get_child_namespaces().append(Namespace(nm))
+                cur_nm.get_child_namespaces().append(Namespace(nm, cur_nm, cur_nm.get_filename(), cur_nm.get_curpath()))
                 cur_nm = cur_nm.get_child_namespaces()[len(cur_nm.child_namespaces) - 1]
         return cur_nm
 
@@ -389,7 +448,7 @@ if __name__ == '__main__':
     # li = [var for var in my_function.get_parameters() if var.get_mod() == AccessModifier.private]
     # for i in li:
     #   print(i.get_name())
-    nm = Namespace('/')
+    nm = Namespace('/', 'f2.php')
     nm.add_namespace('nm/mn/fuck')
     nm.add_namespace('nm/kz')
     ans = nm.get_namespace('nm/kz')
