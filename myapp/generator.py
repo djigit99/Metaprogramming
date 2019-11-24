@@ -1,4 +1,5 @@
 import os
+from shutil import copyfile
 from bs4 import BeautifulSoup
 
 from myapp.items import AccessModifier
@@ -47,7 +48,7 @@ def gen_sidebar(path):
     js_code += pretty_html + '\n`);'
 
     try:
-        h_file = open("web/js/test_side_bar.js", "w+")
+        h_file = open(path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'side_bar.js', "w+")
     except IOError:
         print('Could not open file!')
     with h_file:
@@ -94,7 +95,7 @@ def gen_main_page(output_path):
     soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
     pretty_html = soup.prettify()
     try:
-        h_file = open("web/index.html", "w+")
+        h_file = open(output_path + '\\' + 'docs' + '\\' + "index.html", "w+")
     except IOError:
         print('Could not open file!')
     with h_file:
@@ -134,7 +135,7 @@ def gen_namespace(namespace):
     cur_nm = namespace
     while cur_nm is not None:
         html_code_namespace_name = '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + \
-                                   '\\' + cur_nm.get_link() + '\\' + cur_nm.get_name() + '.html">' \
+                                   cur_nm.get_link() + '\\' + (cur_nm.get_name() if cur_nm.get_name() != '/' else 'root_nm') + '.html">' \
                                    + cur_nm.get_name() + '/' + '</a>' + html_code_namespace_name
         cur_nm = cur_nm.get_parent_namespace()
     html_code += html_code_namespace_name
@@ -168,7 +169,7 @@ def gen_namespace(namespace):
       </tr>
       """
         html_code += "</tbody>\n"
-    """
+    html_code += """
      </table>
    </div>
    """
@@ -192,7 +193,7 @@ def gen_namespace(namespace):
        <tr>
         <td>
         """
-            html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() +\
+            html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + \
                          '\\' + 'classes' + '\\' + class_.get_name() + '.html">' + class_.get_name() + '</a>'
             html_code += """
         </td>
@@ -230,7 +231,7 @@ def gen_namespace(namespace):
         <td>
         """
             html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + \
-                     '\\' + 'interfaces' + '\\' + interface.get_name() + '.html">' + interface.get_name() + '</a>'
+                         '\\' + 'interfaces' + '\\' + interface.get_name() + '.html">' + interface.get_name() + '</a>'
             html_code += """
         </td>
         <td>
@@ -267,7 +268,7 @@ def gen_namespace(namespace):
         <td>
         """
             html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + \
-                     '\\' + 'traits' + '\\' + trait.get_name() + '.html">' + trait.get_name() + '</a>'
+                         '\\' + 'traits' + '\\' + trait.get_name() + '.html">' + trait.get_name() + '</a>'
             html_code += """
         </td>
         <td>
@@ -463,21 +464,22 @@ p__""" + (namespace.get_name() if namespace.get_name() != '/' else '_') + "_" + 
    </footer>
    """
     html_code += "</div>"
-    html_code += """ <!-- Sidebar bar -->
-  <script src="js/test_side_bar.js" type="text/javascript"></script>
-  <script src="js/treeView.js" type="text/javascript"></script>
-
-  
-  <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
-  <script type="text/javascript" src="js/test_popup.js"></script>
+    html_code += " <!-- Sidebar bar -->\n"
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'side_bar.js"' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'treeView.js"' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'jquery-1.7.min.js"' + 'type="text/javascript"></script>'
+    # <script type="text/javascript" src="js/popup.js"></script>
+    html_code += """
  </body>
 </html>
 """
     soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
     pretty_html = soup.prettify()
     try:
-        print('path: ' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link())
-        h_file = open(output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + namespace.get_name() + '.html', "w+")
+        h_file = open(
+            output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link()
+            + '\\' + (namespace.get_name() if namespace.get_name() != '/' else 'root_nm') + '.html',
+            "w+")
     except IOError:
         print('Could not open file!')
     with h_file:
@@ -504,6 +506,7 @@ def gen_class(class_):
     """
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'treeViewSheet.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'navbar-fixed-left.css" ' + 'media="all" rel="stylesheet"/>\n'
+    html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'font-awesome.min.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'template.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'bootstrap-combined.no-icons.min.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += """
@@ -521,11 +524,11 @@ def gen_class(class_):
     cur_nm = namespace
     while cur_nm is not None:
         html_code_namespace_name = '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + \
-                                   '\\' + cur_nm.get_link() + '\\' + cur_nm.get_name() + '.html">' \
+                                   cur_nm.get_link() + '\\' + (namespace.get_name() if namespace.get_name() != '/' else 'root_nm') + '.html">' \
                                    + cur_nm.get_name() + '/' + '</a>' + html_code_namespace_name
         cur_nm = cur_nm.get_parent_namespace()
     html_code += html_code_namespace_name
-    html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' +\
+    html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + \
                  'classes' + '\\' + class_.get_name() + '.html">' + class_.get_name() + '</a>'
     html_code += """
       </nav>
@@ -781,13 +784,12 @@ def gen_class(class_):
        </footer>
        """
     html_code += "</div>"
-    html_code += """ <!-- Sidebar bar -->
-      <script src="js/test_side_bar.js" type="text/javascript"></script>
-      <script src="js/treeView.js" type="text/javascript"></script>
-
-
-      <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
-      <script type="text/javascript" src="js/popup.js"></script>
+    html_code += " <!-- Sidebar bar -->\n"
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'side_bar.js"' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'treeView.js"' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'jquery-1.7.min.js"' + 'type="text/javascript"></script>'
+    # <script type="text/javascript" src="js/popup.js"></script>
+    html_code += """
      </body>
     </html>
     """
@@ -795,7 +797,7 @@ def gen_class(class_):
     pretty_html = soup.prettify()
     try:
         print(output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + 'classes'
-                      + '\\' + class_.get_name() + '.html')
+              + '\\' + class_.get_name() + '.html')
         h_file = open(output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + 'classes'
                       + '\\' + class_.get_name() + '.html', "w+")
     except IOError:
@@ -817,6 +819,7 @@ def gen_interface(interface):
     """
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'treeViewSheet.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'navbar-fixed-left.css" ' + 'media="all" rel="stylesheet"/>\n'
+    html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'font-awesome.min.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'template.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'bootstrap-combined.no-icons.min.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += """
@@ -834,11 +837,11 @@ def gen_interface(interface):
     cur_nm = namespace
     while cur_nm is not None:
         html_code_namespace_name = '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + \
-                                   '\\' + cur_nm.get_link() + '\\' + cur_nm.get_name() + '.html">' \
+                                   cur_nm.get_link() + '\\' + (namespace.get_name() if namespace.get_name() != '/' else 'root_nm') + '.html">' \
                                    + cur_nm.get_name() + '/' + '</a>' + html_code_namespace_name
         cur_nm = cur_nm.get_parent_namespace()
     html_code += html_code_namespace_name
-    html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' +\
+    html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + \
                  'interfaces' + '\\' + interface.get_name() + '.html">' + interface.get_name() + '</a>'
     html_code += """
       </nav>
@@ -956,13 +959,12 @@ def gen_interface(interface):
        </footer>
        """
     html_code += "</div>"
-    html_code += """ <!-- Sidebar bar -->
-      <script src="js/test_side_bar.js" type="text/javascript"></script>
-      <script src="js/treeView.js" type="text/javascript"></script>
-
-
-      <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
-      <script type="text/javascript" src="js/popup.js"></script>
+    html_code += " <!-- Sidebar bar -->\n"
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'side_bar.js"' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'treeView.js"' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'jquery-1.7.min.js"' + 'type="text/javascript"></script>'
+    # <script type="text/javascript" src="js/popup.js"></script>
+    html_code += """
      </body>
     </html>
     """
@@ -970,7 +972,7 @@ def gen_interface(interface):
     pretty_html = soup.prettify()
     try:
         print(output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + 'interfaces'
-                      + '\\' + interface.get_name() + '.html')
+              + '\\' + interface.get_name() + '.html')
         h_file = open(output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + 'interfaces'
                       + '\\' + interface.get_name() + '.html', "w+")
     except IOError:
@@ -992,6 +994,7 @@ def gen_trait(trait):
     """
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'treeViewSheet.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'navbar-fixed-left.css" ' + 'media="all" rel="stylesheet"/>\n'
+    html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'font-awesome.min.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'template.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += '<link href="' + output_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'bootstrap-combined.no-icons.min.css" ' + 'media="all" rel="stylesheet"/>\n'
     html_code += """
@@ -1009,11 +1012,11 @@ def gen_trait(trait):
     cur_nm = namespace
     while cur_nm is not None:
         html_code_namespace_name = '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + \
-                                   '\\' + cur_nm.get_link() + '\\' + cur_nm.get_name() + '.html">' \
+                                   cur_nm.get_link() + '\\' + (namespace.get_name() if namespace.get_name() != '/' else 'root_nm') + '.html">' \
                                    + cur_nm.get_name() + '/' + '</a>' + html_code_namespace_name
         cur_nm = cur_nm.get_parent_namespace()
     html_code += html_code_namespace_name
-    html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' +\
+    html_code += '<a href="' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + \
                  'traits' + '\\' + trait.get_name() + '.html">' + trait.get_name() + '</a>'
     html_code += """
       </nav>
@@ -1101,7 +1104,6 @@ def gen_trait(trait):
     html_code += "</section>\n"
 
     html_code += "</section>\n"
-
 
     html_code += """<div class="object_stl">
       <a name="properties"></a>
@@ -1206,13 +1208,12 @@ def gen_trait(trait):
        </footer>
        """
     html_code += "</div>"
-    html_code += """ <!-- Sidebar bar -->
-      <script src="js/test_side_bar.js" type="text/javascript"></script>
-      <script src="js/treeView.js" type="text/javascript"></script>
-
-
-      <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
-      <script type="text/javascript" src="js/popup.js"></script>
+    html_code += " <!-- Sidebar bar -->\n"
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'side_bar.js"' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'treeView.js"' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + output_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'jquery-1.7.min.js"' + 'type="text/javascript"></script>'
+    #<script type="text/javascript" src="js/popup.js"></script>
+    html_code += """
      </body>
     </html>
     """
@@ -1220,7 +1221,7 @@ def gen_trait(trait):
     pretty_html = soup.prettify()
     try:
         print(output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + 'traits'
-                      + '\\' + trait.get_name() + '.html')
+              + '\\' + trait.get_name() + '.html')
         h_file = open(output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link() + '\\' + 'traits'
                       + '\\' + trait.get_name() + '.html', "w+")
     except IOError:
@@ -1230,18 +1231,87 @@ def gen_trait(trait):
         h_file.close()
 
 
+def gen_preload(folder_path):
+    os.makedirs(folder_path + '\\' + 'docs' + '\\' + 'css', 777, True)
+    os.makedirs(folder_path + '\\' + 'docs' + '\\' + 'js', 777, True)
+    os.makedirs(folder_path + '\\' + 'docs' + '\\' + 'font', 777, True)
+
+    gen_main_page(folder_path)
+    gen_sidebar(folder_path)
+
+    # Source path
+
+    # css
+    source_bootstrap = 'web/css/bootstrap-combined.no-icons.min.css'
+    source_font = 'web/css/font-awesome.min.css'
+    source_navbar = 'web/css/navbar-fixed-left.css'
+    source_popup = 'web/css/popup.css'
+    source_template = 'web/css/template.css'
+    source_tree_view = 'web/css/treeViewSheet.css'
+
+    # js
+
+    source_jquery = 'web/js/jquery-1.7.min.js'
+    source_tree_view_js = 'web/js/treeView.js'
+
+    # font
+    source_font_otf = 'web/font/FontAwesome.otf'
+    source_font_eot = 'web/font/fontawesome-webfont.eot'
+    source_font_svg = 'web/font/fontawesome-webfont.svg'
+    source_font_ttf = 'web/font/fontawesome-webfont.ttf'
+    source_font_woff = 'web/font/fontawesome-webfont.woff'
+
+    # Destination path
+
+    # css
+    destination_bootstrap = folder_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'bootstrap-combined.no-icons.min.css'
+    destination_font = folder_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'font-awesome.min.css'
+    destination_navbar = folder_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'navbar-fixed-left.css'
+    destination_popup = folder_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'popup.css'
+    destination_template = folder_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'template.css'
+    destination_tree_view = folder_path + '\\' + 'docs' + '\\' + 'css' + '\\' + 'treeViewSheet.css'
+
+    #js
+
+    destination_jquery = folder_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'jquery-1.7.min.js'
+    destination_tree_view_js = folder_path + '\\' + 'docs' + '\\' + 'js' + '\\' + 'treeView.js'
+
+
+    # font
+    destination_font_otf = folder_path + '\\' + 'docs' + '\\' + 'font' + '\\' + 'FontAwesome.otf'
+    destination_font_eot = folder_path + '\\' + 'docs' + '\\' + 'font' + '\\' + 'fontawesome-webfont.eot'
+    destination_font_svg = folder_path + '\\' + 'docs' + '\\' + 'font' + '\\' + 'fontawesome-webfont.svg'
+    destination_font_ttf = folder_path + '\\' + 'docs' + '\\' + 'font' + '\\' + 'fontawesome-webfont.ttf'
+    destination_font_woff = folder_path + '\\' + 'docs' + '\\' + 'font' + '\\' + 'fontawesome-webfont.woff'
+
+    copyfile(source_bootstrap, destination_bootstrap)
+    copyfile(source_font, destination_font)
+    copyfile(source_navbar, destination_navbar)
+    copyfile(source_popup, destination_popup)
+    copyfile(source_template, destination_template)
+    copyfile(source_tree_view, destination_tree_view)
+
+    copyfile(source_jquery, destination_jquery)
+    copyfile(source_tree_view_js, destination_tree_view_js)
+
+    copyfile(source_font_otf, destination_font_otf)
+    copyfile(source_font_eot, destination_font_eot)
+    copyfile(source_font_svg, destination_font_svg)
+    copyfile(source_font_ttf, destination_font_ttf)
+    copyfile(source_font_woff, destination_font_woff)
+
+
 def gen_hierarchy(folder_path):
     tree = os.walk(folder_path)
     for (dirpath, dirnames, filenames) in tree:
         for filename in filenames:
-            os.makedirs(dirpath + '\\docs\\' + filename.split('.')[0], 777, True)
+            os.makedirs(dirpath + '\\' + 'docs' + '\\' + filename.split('.')[0], 777, True)
 
 
 def gen_namespace_hierarchy(namespace):
     output_path = namespace.get_curpath()
     filename = namespace.get_filename()
 
-    print('os:' + output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link())
     os.makedirs(output_path + '\\' + 'docs' + '\\' + filename + '\\' + namespace.get_link(), 777, True)
     gen_namespace(namespace)
 
