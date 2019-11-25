@@ -1,10 +1,10 @@
 import logging
 import os
 import sys
-from items import *
-from docblock import Docblock
-from tag import *
-from utils import *
+from myapp.items import *
+from myapp.docblock import Docblock
+from myapp.tag import *
+from myapp.utils import *
 
 
 # We should know the State we are inside,
@@ -41,7 +41,7 @@ class Parser:
         self.namespaces = []
 
         # global namespace
-        self.root_namespace = Namespace('/')
+        self.root_namespace = Namespace('/', None, os.path.split(filepath)[1][:-4], os.path.dirname(filepath))
 
         # name of namespace we stand inside at the moment
         self.cur_namespace = self.root_namespace
@@ -50,13 +50,13 @@ class Parser:
         self.cur_function = Function('')
 
         # name of class we stand inside at the moment
-        self.cur_class = Class('')
+        self.cur_class = Class('', self.root_namespace)
 
         # name of interface we stand inside at the moment
-        self.cur_interface = Interface('')
+        self.cur_interface = Interface('', self.root_namespace)
 
         # name of trait we stand inside at the moment
-        self.cur_trait = Trait('')
+        self.cur_trait = Trait('', self.root_namespace)
 
         # name of method we stand inside at the moment
         self.cur_method = Method('', AccessModifier.public)
@@ -135,17 +135,17 @@ class Parser:
                     state = State.IN_FUNCTION
                 elif is_class_line(line):
                     self.is_first_level_docblock = False
-                    self.cur_class = parser_class(line)
+                    self.cur_class = parser_class(line, self.cur_namespace)
                     self.cur_namespace.add_class(self.cur_class)
                     state = State.IN_CLASS
                 elif is_interface_line(line):
                     self.is_first_level_docblock = False
-                    self.cur_interface = parser_interface(line)
+                    self.cur_interface = parser_interface(line, self.cur_namespace)
                     self.cur_namespace.add_interface(self.cur_interface)
                     state = State.IN_INTERFACE
                 elif is_trait_line(line):
                     self.is_first_level_docblock = False
-                    self.cur_trait = parser_trait(line)
+                    self.cur_trait = parser_trait(line, self.cur_namespace)
                     self.cur_namespace.add_trait(self.cur_trait)
                     state = State.IN_TRAIT
                 else:
@@ -182,7 +182,7 @@ class Parser:
                     source_block.append(line)
             elif state == state.IN_CLASS:
                 if line[0] == '}':
-                    self.cur_class = Class('')
+                    self.cur_class = Class('', self.cur_namespace)
                     state = state.GLOBAL
                     self.is_prev_docblock = False
                 elif line == "/**":
@@ -200,7 +200,7 @@ class Parser:
                     self.braces_diff = 0
             elif state == state.IN_INTERFACE:
                 if line[0] == '}':
-                    self.cur_interface = Interface('')
+                    self.cur_interface = Interface('', self.cur_namespace)
                     state = state.GLOBAL
                     self.is_prev_docblock = False
                 elif line == "/**":
@@ -213,7 +213,7 @@ class Parser:
                     self.braces_diff = 0
             elif state == state.IN_TRAIT:
                 if line[0] == '}':
-                    self.cur_trait = Trait('')
+                    self.cur_trait = Trait('', self.cur_namespace)
                     state = state.GLOBAL
                     self.is_prev_docblock = False
                 elif line == "/**":
@@ -237,11 +237,6 @@ class Parser:
                 if self.braces_diff == 0:
                     source_block.append(line)
                     self.cur_method.set_source_body(source_block)
-                    print('---------------')
-                    print('Source block: ')
-                    for line in source_block:
-                        print(line)
-                    print('---------------')
                     source_block = []
                     state = prev_state
                     self.is_prev_docblock = False
@@ -316,7 +311,6 @@ def parser_docblock(docblock):
                 tags.append(tag)
                 logging.info("GOOD STYLE: tag parsed")
 
-    pass
     return Docblock(summary, description, tags)
 
 
@@ -579,7 +573,7 @@ def test_parser_function():
 # required: one whitespace between 'class' and class name
 # required: one whitespace between class name and 'extends'/'implements'
 # required: one whitespace between 'extends'/'implements' and class/interface name
-def parser_class(str):
+def parser_class(str, namespace=None):
 
     extends_name = implements_name = ""
     if str.find("extends") != -1:
@@ -593,7 +587,7 @@ def parser_class(str):
     print("Class name: " + class_name)
     print("Parent class: " + extends_name)
     print("Interface: " + implements_name)
-    return Class(class_name, extends_name, implements_name)
+    return Class(class_name, namespace, extends_name, implements_name)
 
 
 def test_parser_class():
@@ -612,7 +606,7 @@ def test_parser_class():
 # required: one whitespace between interface name and 'extends''
 # required: one whitespace between 'extends' and interface name
 # required: one whitespace between comma and interface name
-def parser_interface(str):
+def parser_interface(str, namespace=None):
 
     parents = []
 
@@ -626,7 +620,7 @@ def parser_interface(str):
         interface_name = str[str.find("interface") + 10:]
 
     print("Interface: " + interface_name)
-    return Interface(interface_name, parents)
+    return Interface(interface_name, namespace, parents)
 
 
 def test_parser_interface():
@@ -642,11 +636,11 @@ def test_parser_interface():
 
 # @param str string with trait
 # required: one whitespace between 'trait' and trait name
-def parser_trait(str):
+def parser_trait(str, namespace=None):
 
     trait_name = str[str.find("trait") + 6:]
     print("Trait name: " + trait_name)
-    return Trait(trait_name)
+    return Trait(trait_name, namespace)
 
 
 def test_parser_trait():
@@ -770,13 +764,13 @@ def parser_method(str, return_type=""):
         else:
             pos_var_end = str.find(')')
 
-        parameters.append(str[str.find('$') + 1:pos_var_end])
+        parameters.append(Global_var(str[str.find('$') + 1:pos_var_end]))
         str = str[pos_var_end + 1:]
 
     print('------------')
     print('parameters: ')
     for param in parameters:
-        print(param)
+        print(param.get_name())
     print('------------')
 
     meth = Method(method_name, am, return_type)
@@ -811,3 +805,7 @@ def main():
 
     nm = ps.parse()
     pass
+
+
+if __name__ == '__main__':
+    main()
