@@ -12,8 +12,8 @@ def doc_file(path, output_path, content):
     content.process_namespace(nm)
     gen_preload(dirname(path), output_path)
     gen_sidebar(dirname(path), output_path, False, True, nm.get_filename())
-    gen_file(nm, dirname(path), output_path)
-    gen_namespace_hierarchy(nm, output_path)
+    gen_file(nm, dirname(path), output_path, content)
+    gen_namespace_hierarchy(nm, output_path, content)
 
 
 def doc_folder(path, output_path, content):
