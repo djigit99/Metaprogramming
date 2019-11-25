@@ -5,7 +5,7 @@ from string import ascii_lowercase
 from shutil import copyfile
 from bs4 import BeautifulSoup
 
-from php_doc_generator.items import AccessModifier
+from .items import AccessModifier
 
 
 def gen_sidebar_file(filename, output_path):
@@ -670,7 +670,7 @@ p__""" + (namespace.get_name() if namespace.get_name() != '/' else '_') + "_" + 
         h_file.write(pretty_html)
         h_file.close()
     try:
-        with open("myapp/web/js/test_popup.js", "a") as h_file:
+        with open("php_doc_gen/web/js/test_popup.js", "a") as h_file:
             h_file.write(js_code)
             h_file.close()
     except IOError:
@@ -1571,24 +1571,24 @@ def gen_preload(folder_path, output_path):
     # Source path
 
     # css
-    source_bootstrap = 'myapp/web/css/bootstrap-combined.no-icons.min.css'
-    source_font = 'myapp/web/css/font-awesome.min.css'
-    source_navbar = 'myapp/web/css/navbar-fixed-left.css'
-    source_popup = 'myapp/web/css/popup.css'
-    source_template = 'myapp/web/css/template.css'
-    source_tree_view = 'myapp/web/css/treeViewSheet.css'
+    source_bootstrap = 'php_doc_gen/web/css/bootstrap-combined.no-icons.min.css'
+    source_font = 'php_doc_gen/web/css/font-awesome.min.css'
+    source_navbar = 'php_doc_gen/web/css/navbar-fixed-left.css'
+    source_popup = 'php_doc_gen/web/css/popup.css'
+    source_template = 'php_doc_gen/web/css/template.css'
+    source_tree_view = 'php_doc_gen/web/css/treeViewSheet.css'
 
     # js
 
-    source_jquery = 'myapp/web/js/jquery-1.7.min.js'
-    source_tree_view_js = 'myapp/web/js/treeView.js'
+    source_jquery = 'php_doc_gen/web/js/jquery-1.7.min.js'
+    source_tree_view_js = 'php_doc_gen/web/js/treeView.js'
 
     # font
-    source_font_otf = 'myapp/web/font/FontAwesome.otf'
-    source_font_eot = 'myapp/web/font/fontawesome-webfont.eot'
-    source_font_svg = 'myapp/web/font/fontawesome-webfont.svg'
-    source_font_ttf = 'myapp/web/font/fontawesome-webfont.ttf'
-    source_font_woff = 'myapp/web/font/fontawesome-webfont.woff'
+    source_font_otf = 'php_doc_gen/web/font/FontAwesome.otf'
+    source_font_eot = 'php_doc_gen/web/font/fontawesome-webfont.eot'
+    source_font_svg = 'php_doc_gen/web/font/fontawesome-webfont.svg'
+    source_font_ttf = 'php_doc_gen/web/font/fontawesome-webfont.ttf'
+    source_font_woff = 'php_doc_gen/web/font/fontawesome-webfont.woff'
 
     # Destination path
 

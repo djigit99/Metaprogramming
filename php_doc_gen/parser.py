@@ -1,10 +1,10 @@
 import logging
 import os
 import sys
-from php_doc_generator.items import *
-from php_doc_generator.docblock import Docblock
-from php_doc_generator.tag import *
-from php_doc_generator.utils import *
+from .items import *
+from .docblock import Docblock
+from .tag import *
+from .utils import *
 
 
 # We should know the State we are inside,
@@ -798,9 +798,9 @@ def test_parser_method():
 
 
 def main():
-    with open('myapp.log', 'w') as f:
+    with open('php_doc_gen.log', 'w') as f:
         pass
-    logging.basicConfig(filename='myapp.log', level=logging.INFO)
+    logging.basicConfig(filename='php_doc_gen.log', level=logging.INFO)
     ps = Parser(r'D:\recFolder\f2.php')
 
     nm = ps.parse()
