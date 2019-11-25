@@ -40,5 +40,7 @@ Status: open
 Q14: add ? into html table cell in order to describe an object goal
 Status: open
 
+Q15: constant is not a global scope
+Status: open
 
 

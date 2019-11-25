@@ -28,12 +28,12 @@ parser class:
 parse DocBlock after namespace !!!
 
 tags:
-	1) global vars: @global
-	2) const: @access
-	3) function: @param, @global, @return
+	1) global vars: @global(deprecated)
+	2) const: @access(deprecated)
+	3) function: @param, @global(deprecated), @return
 	4) class, interface, trait:
-		class variables: @var
-		class methods: @global, @param, @return
+	5) property: @var
+	6) method: @global(deprecated), @param, @return
 
 parser class returns namespace, items
 
