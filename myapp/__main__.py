@@ -1,17 +1,37 @@
 from .controller import Controller
-from .generator import *
-from .parser import Parser
+from os.path import isfile, isdir, dirname
+import argparse
 
-ct = Controller(r'D:\recFolder', True)
+class Flags(object):
+    pass
 
-gen_sidebar(r'D:\recFolder')
-gen_main_page(r'D:\recFolder')
+parser = argparse.ArgumentParser(description='PHP Documentation Generator')
+parser.add_argument("p", type=str, help="Path to directory or file being documented")
+parser.add_argument("-t", required=False, type=str, help="Path to directory where to store documentation files(default: current directory)")
+parser.add_argument("-r", required=False, action='store_true', help="recursive mode")
+args = parser.parse_args(namespace=Flags)
 
-
-par = Parser(r'D:\recfolder\f3.php')
-nm = par.parse()
-#gen_file(nm.get_child_namespaces()[0].get_child_namespaces()[0], 'output_path')
-#gen_class(nm.get_classes()[0])
-
-#gen_hierarchy('D:\recfolder')
-gen_namespace_hierarchy(nm)
+if isfile(Flags.p):
+    if not Flags.t:
+        Flags.t = dirname(Flags.p)
+    elif not isdir(Flags.t):
+        print('target directory not found, please enter the correct path')
+        exit(1)
+    else:
+        pass
+    Controller(Flags.p, Flags.t)
+elif isdir(Flags.p):
+    if not Flags.t:
+        Flags.t = Flags.p
+    elif not isdir(Flags.t):
+        print('target directory not found, please enter the correct path')
+        exit(1)
+    else:
+        pass
+    if Flags.r:
+        Controller(Flags.p, Flags.t, True, True)
+    else:
+        Controller(Flags.p, Flags.t, True)
+else:
+    print('file or directory not found, please enter the correct path')
+    exit(1)
