@@ -1,5 +1,5 @@
 import enum
-
+from os import sep
 
 class Global:
 
@@ -212,7 +212,7 @@ class Trait(Global):
         return self.methods
 
     def get_methods_with_mode(self, mod):
-        return [method for method in self.properties if method.get_mod() == mod]
+        return [method for method in self.methods if method.get_mod() == mod]
 
 
 class AccessModifier(enum.Enum):
@@ -332,6 +332,7 @@ class Namespace(Global):
         self.traits = []
         self.file_author_name = ''
         self.file_author_email = ''
+        self.file_version = ''
 
     def get_parent_namespace(self):
         return self.parent_namespace
@@ -352,9 +353,9 @@ class Namespace(Global):
         cur_nm = self
         link = ''
         while cur_nm is not None:
-            cur_name = 'namespaces' + '\\'
+            cur_name = 'namespaces' + sep
             cur_name += cur_nm.get_name() if cur_nm.get_name() != '/' else 'root_nm'
-            link = ('\\' if cur_nm.parent_namespace is not None and cur_nm.parent_namespace.get_name() != '' else '') + cur_name + link
+            link = (sep if cur_nm.parent_namespace is not None and cur_nm.parent_namespace.get_name() != '' else '') + cur_name + link
             cur_nm = cur_nm.parent_namespace
         return link
 
@@ -437,9 +438,22 @@ class Namespace(Global):
 
     def process_docblock(self, docblock):
         tg_author = docblock.get_tags_by_name('@author')
-        if tg_author is not None:
+        if len(tg_author):
             self.file_author_name = tg_author[0].get_author_name()
             self.file_author_email = tg_author[0].get_author_email()
+
+        tg_version = docblock.get_tags_by_name('@version')
+        if len(tg_version):
+            self.file_version = tg_version[0].get_version()
+
+    def get_file_version(self):
+        return self.file_version
+
+    def get_file_author_name(self):
+        return self.file_author_name
+
+    def get_file_author_email(self):
+        return self.file_author_email
 
 
 if __name__ == '__main__':
