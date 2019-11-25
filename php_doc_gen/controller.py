@@ -1,6 +1,6 @@
-from myapp.parser import Parser
-from myapp.generator import *
-from myapp.azindex import Content
+from php_doc_generator.parser import Parser
+from php_doc_generator.generator import *
+from php_doc_generator.azindex import Content
 
 from os import listdir
 from os.path import isfile, isdir, join, splitext, dirname

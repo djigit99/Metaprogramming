@@ -1,10 +1,10 @@
 import logging
 import os
 import sys
-from myapp.items import *
-from myapp.docblock import Docblock
-from myapp.tag import *
-from myapp.utils import *
+from php_doc_generator.items import *
+from php_doc_generator.docblock import Docblock
+from php_doc_generator.tag import *
+from php_doc_generator.utils import *
 
 
 # We should know the State we are inside,

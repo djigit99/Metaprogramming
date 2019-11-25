@@ -5,7 +5,7 @@ from string import ascii_lowercase
 from shutil import copyfile
 from bs4 import BeautifulSoup
 
-from myapp.items import AccessModifier
+from php_doc_generator.items import AccessModifier
 
 
 def gen_sidebar_file(filename, output_path):
