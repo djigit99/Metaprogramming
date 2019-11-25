@@ -4,7 +4,7 @@ from os.path import isfile, isdir, join, splitext, basename
 from string import ascii_lowercase
 from shutil import copyfile
 from bs4 import BeautifulSoup
-
+import php_doc_gen
 from .items import AccessModifier
 
 
@@ -1579,7 +1579,6 @@ def gen_preload(folder_path, output_path):
     source_tree_view = 'php_doc_gen/web/css/treeViewSheet.css'
 
     # js
-
     source_jquery = 'php_doc_gen/web/js/jquery-1.7.min.js'
     source_tree_view_js = 'php_doc_gen/web/js/treeView.js'
 
@@ -1630,13 +1629,6 @@ def gen_preload(folder_path, output_path):
     copyfile(source_font_woff, destination_font_woff)
 
 
-def gen_hierarchy(folder_path):
-    tree = os.walk(folder_path)
-    for (dirpath, dirnames, filenames) in tree:
-        for filename in filenames:
-            os.makedirs(dirpath + '\\' + 'docs' + '\\' + filename.split('.')[0], 777, True)
-
-
 def gen_namespace_hierarchy(namespace, output_path, content):
     filename = namespace.get_filename()
     os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link()), 777, True)
@@ -1660,10 +1652,3 @@ def gen_namespace_hierarchy(namespace, output_path, content):
     for nm in namespace.get_child_namespaces():
         gen_namespace_hierarchy(nm, output_path, content)
 
-
-def main():
-    gen_hierarchy(r'D:\recfolder')
-
-
-if __name__ == '__main__':
-    main()
