@@ -1,6 +1,7 @@
 import os
-from os import listdir, walk
+from os import listdir
 from os.path import isfile, isdir, join, splitext, basename
+from string import ascii_lowercase
 from shutil import copyfile
 from bs4 import BeautifulSoup
 
@@ -20,7 +21,7 @@ def gen_sidebar_folder(folder_path, output_path):
 
 
 def gen_sidebar_folder_rec(folder_path, output_path, is_rec=True):
-    html_code = '<li><span class="caret_treeView">' + basename(folder_path) + '</span>'
+    html_code = '<li><span class="caret_treeView">' + '</span>' + '<a href="' + os.path.join(output_path, 'docs', basename(output_path) + '.html') + '" class="folder_a">' + basename(folder_path) + '</a>'
     html_code += '<ul class="nested">'
     html_code += gen_sidebar_folder(folder_path, output_path)
     if is_rec:
@@ -95,15 +96,87 @@ def gen_main_page(output_path):
     soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
     pretty_html = soup.prettify()
     try:
-        h_file = open(os.path.join(output_path, 'docs', "index.html"), "w+")
+        with open(os.path.join(output_path, 'docs', "index.html"), "w+") as h_file:
+            h_file.write(pretty_html)
+            h_file.close()
+    except IOError:
+        print('Could not open file!')\
+
+
+
+def gen_folder(read_me, output_path, content):
+    os.makedirs(os.path.join(output_path, 'docs'), 777, True)
+    html_code = """<!DOCTYPE html> 
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <link href="css/treeViewSheet.css" rel="stylesheet" media="all"/>
+            <link href="css/navbar-fixed-left.css" rel="stylesheet" media="all"/>
+            <link href="css/template.css" rel="stylesheet" media="all"/>
+            <link href="css/bootstrap-combined.no-icons.min.css" rel="stylesheet" media="all"/>
+            <title>Title</title>
+        </head>
+        <body>
+        <!-- Page content -->
+        <div class="main">
+       """
+    for line in read_me:
+        html_code += line + '<br>'
+    html_code += """
+                    <footer>
+                    <nav>
+                    """
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'a.html') + '"> Aa </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'b.html') + '"> Bb </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'c.html') + '"> Cc </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'd.html') + '"> Dd </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'e.html') + '"> Ee </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'f.html') + '"> Ff </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'g.html') + '"> Gg </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'h.html') + '"> Hh </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'i.html') + '"> Ii </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'j.html') + '"> Jj </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'k.html') + '"> Kk </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'l.html') + '"> Ll </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'm.html') + '"> Mm </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'n.html') + '"> Nn </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'o.html') + '"> Oo </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'p.html') + '"> Pp </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'q.html') + '"> Qq </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'r.html') + '"> Rr </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 's.html') + '"> Ss </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 't.html') + '"> Tt </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'u.html') + '"> Uu </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'v.html') + '"> Vv </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'w.html') + '"> Ww </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'x.html') + '"> Xx </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'y.html') + '"> Yy </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'z.html') + '"> Zz </a>'
+    html_code += """
+                    </nav>
+                    </footer>
+                </div>
+                """
+    html_code += " <!-- Sidebar bar -->\n"
+    html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
+                                                'side_bar.js') + '" ' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
+                                                'treeView.js') + '" ' + 'type="text/javascript"></script>'
+    html_code += """
+        </body>
+        </html>
+        """
+    soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
+    pretty_html = soup.prettify()
+    try:
+        with open(os.path.join(output_path, 'docs', basename(output_path) + ".html"), "w+") as h_file:
+            h_file.write(pretty_html)
+            h_file.close()
     except IOError:
         print('Could not open file!')
-    with h_file:
-        h_file.write(pretty_html)
-        h_file.close()
 
 
-def gen_file(root_namespace, folder_path, output_path):
+def gen_file(root_namespace, folder_path, output_path, content):
     filename = root_namespace.get_filename()
     os.makedirs(os.path.join(output_path, 'docs', filename), 777, True)
     html_code = """<!DOCTYPE html> 
@@ -160,38 +233,41 @@ def gen_file(root_namespace, folder_path, output_path):
     </table>
    </div>
    """
-    html_code += """ <footer>
-     <nav>
-       <a href="#">Aa</a> |
-       <a href="#">Bb</a> |
-       <a href="#">Cc</a> |
-       <a href="#">Dd</a> |
-       <a href="#">Ee</a> |
-       <a href="#">Ff</a> |
-       <a href="#">Gg</a> |
-       <a href="#">Hh</a> |
-       <a href="#">Ii</a> |
-       <a href="#">Jj</a> |
-       <a href="#">Kk</a> |
-       <a href="#">Ll</a> |
-       <a href="#">Mm</a> |
-       <a href="#">Nn</a> |
-       <a href="#">Oo</a> |
-       <a href="#">Pp</a> |
-       <a href="#">Qq</a> |
-       <a href="#">Rr</a> |
-       <a href="#">Ss</a> |
-       <a href="#">Tt</a> |
-       <a href="#">Uu</a> |
-       <a href="#">Vv</a> |
-       <a href="#">Ww</a> |
-       <a href="#">Xx</a> |
-       <a href="#">Yy</a> |
-       <a href="#">Zz</a>
-     </nav>
-   </footer>
-  </div>
-    """
+    html_code += """
+                <footer>
+                <nav>
+                """
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'a.html') + '"> Aa </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'b.html') + '"> Bb </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'c.html') + '"> Cc </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'd.html') + '"> Dd </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'e.html') + '"> Ee </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'f.html') + '"> Ff </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'g.html') + '"> Gg </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'h.html') + '"> Hh </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'i.html') + '"> Ii </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'j.html') + '"> Jj </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'k.html') + '"> Kk </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'l.html') + '"> Ll </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'm.html') + '"> Mm </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'n.html') + '"> Nn </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'o.html') + '"> Oo </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'p.html') + '"> Pp </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'q.html') + '"> Qq </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'r.html') + '"> Rr </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 's.html') + '"> Ss </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 't.html') + '"> Tt </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'u.html') + '"> Uu </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'v.html') + '"> Vv </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'w.html') + '"> Ww </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'x.html') + '"> Xx </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'y.html') + '"> Yy </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'z.html') + '"> Zz </a>'
+    html_code += """
+                </nav>
+                </footer>
+            </div>
+            """
     html_code += " <!-- Sidebar bar -->\n"
     html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
                                                 'side_bar.js') + '" ' + 'type="text/javascript"></script>'
@@ -211,7 +287,7 @@ def gen_file(root_namespace, folder_path, output_path):
         print('Could not open file!')
 
 
-def gen_namespace(namespace, output_path):
+def gen_namespace(namespace, output_path, content):
     folder_path = namespace.get_curpath()
     filename = namespace.get_filename()
     js_code = ""
@@ -535,38 +611,41 @@ p__""" + (namespace.get_name() if namespace.get_name() != '/' else '_') + "_" + 
     </div>
    </div>
    """
-    html_code += """ <footer>
-     <nav>
-       <a href="#">Aa</a> |
-       <a href="#">Bb</a> |
-       <a href="#">Cc</a> |
-       <a href="#">Dd</a> |
-       <a href="#">Ee</a> |
-       <a href="#">Ff</a> |
-       <a href="#">Gg</a> |
-       <a href="#">Hh</a> |
-       <a href="#">Ii</a> |
-       <a href="#">Jj</a> |
-       <a href="#">Kk</a> |
-       <a href="#">Ll</a> |
-       <a href="#">Mm</a> |
-       <a href="#">Nn</a> |
-       <a href="#">Oo</a> |
-       <a href="#">Pp</a> |
-       <a href="#">Qq</a> |
-       <a href="#">Rr</a> |
-       <a href="#">Ss</a> |
-       <a href="#">Tt</a> |
-       <a href="#">Uu</a> |
-       <a href="#">Vv</a> |
-       <a href="#">Ww</a> |
-       <a href="#">Xx</a> |
-       <a href="#">Yy</a> |
-       <a href="#">Zz</a>
-     </nav>
-   </footer>
-   """
-    html_code += "</div>"
+    html_code += """
+                <footer>
+                <nav>
+                """
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'a.html') + '"> Aa </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'b.html') + '"> Bb </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'c.html') + '"> Cc </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'd.html') + '"> Dd </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'e.html') + '"> Ee </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'f.html') + '"> Ff </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'g.html') + '"> Gg </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'h.html') + '"> Hh </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'i.html') + '"> Ii </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'j.html') + '"> Jj </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'k.html') + '"> Kk </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'l.html') + '"> Ll </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'm.html') + '"> Mm </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'n.html') + '"> Nn </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'o.html') + '"> Oo </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'p.html') + '"> Pp </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'q.html') + '"> Qq </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'r.html') + '"> Rr </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 's.html') + '"> Ss </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 't.html') + '"> Tt </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'u.html') + '"> Uu </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'v.html') + '"> Vv </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'w.html') + '"> Ww </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'x.html') + '"> Xx </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'y.html') + '"> Yy </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'z.html') + '"> Zz </a>'
+    html_code += """
+                </nav>
+                </footer>
+            </div>
+            """
     html_code += " <!-- Sidebar bar -->\n"
     html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
                                                 'side_bar.js') + '" ' + 'type="text/javascript"></script>'
@@ -591,15 +670,14 @@ p__""" + (namespace.get_name() if namespace.get_name() != '/' else '_') + "_" + 
         h_file.write(pretty_html)
         h_file.close()
     try:
-        h_file = open("web/js/test_popup.js", "a")
+        with open("myapp/web/js/test_popup.js", "a") as h_file:
+            h_file.write(js_code)
+            h_file.close()
     except IOError:
         print('Could not open file!')
-    with h_file:
-        h_file.write(js_code)
-        h_file.close()
 
 
-def gen_class(class_, output_path):
+def gen_class(class_, output_path, content):
     namespace = class_.get_namespace()
     folder_path = namespace.get_curpath()
     filename = namespace.get_filename()
@@ -855,38 +933,41 @@ def gen_class(class_, output_path):
 
     html_code += "</div>\n"
 
-    html_code += """ <footer>
-         <nav>
-           <a href="#">Aa</a> |
-           <a href="#">Bb</a> |
-           <a href="#">Cc</a> |
-           <a href="#">Dd</a> |
-           <a href="#">Ee</a> |
-           <a href="#">Ff</a> |
-           <a href="#">Gg</a> |
-           <a href="#">Hh</a> |
-           <a href="#">Ii</a> |
-           <a href="#">Jj</a> |
-           <a href="#">Kk</a> |
-           <a href="#">Ll</a> |
-           <a href="#">Mm</a> |
-           <a href="#">Nn</a> |
-           <a href="#">Oo</a> |
-           <a href="#">Pp</a> |
-           <a href="#">Qq</a> |
-           <a href="#">Rr</a> |
-           <a href="#">Ss</a> |
-           <a href="#">Tt</a> |
-           <a href="#">Uu</a> |
-           <a href="#">Vv</a> |
-           <a href="#">Ww</a> |
-           <a href="#">Xx</a> |
-           <a href="#">Yy</a> |
-           <a href="#">Zz</a>
-         </nav>
-       </footer>
-       """
-    html_code += "</div>"
+    html_code += """
+                <footer>
+                <nav>
+                """
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'a.html') + '"> Aa </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'b.html') + '"> Bb </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'c.html') + '"> Cc </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'd.html') + '"> Dd </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'e.html') + '"> Ee </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'f.html') + '"> Ff </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'g.html') + '"> Gg </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'h.html') + '"> Hh </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'i.html') + '"> Ii </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'j.html') + '"> Jj </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'k.html') + '"> Kk </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'l.html') + '"> Ll </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'm.html') + '"> Mm </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'n.html') + '"> Nn </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'o.html') + '"> Oo </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'p.html') + '"> Pp </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'q.html') + '"> Qq </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'r.html') + '"> Rr </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 's.html') + '"> Ss </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 't.html') + '"> Tt </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'u.html') + '"> Uu </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'v.html') + '"> Vv </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'w.html') + '"> Ww </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'x.html') + '"> Xx </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'y.html') + '"> Yy </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'z.html') + '"> Zz </a>'
+    html_code += """
+                </nav>
+                </footer>
+            </div>
+            """
     html_code += " <!-- Sidebar bar -->\n"
     html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
                                                 'side_bar.js') + '" ' + 'type="text/javascript"></script>'
@@ -902,15 +983,14 @@ def gen_class(class_, output_path):
     soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
     pretty_html = soup.prettify()
     try:
-        h_file = open(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'classes', class_.get_name() + '.html'), "w+")
+        with open(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'classes', class_.get_name() + '.html'), "w+") as h_file:
+            h_file.write(pretty_html)
+            h_file.close()
     except IOError:
         print('Could not open file!')
-    with h_file:
-        h_file.write(pretty_html)
-        h_file.close()
 
 
-def gen_interface(interface, output_path):
+def gen_interface(interface, output_path, content):
     namespace = interface.get_namespace()
     folder_path = namespace.get_curpath()
     filename = namespace.get_filename()
@@ -1030,38 +1110,41 @@ def gen_interface(interface, output_path):
 
     html_code += "</div>\n"
 
-    html_code += """ <footer>
-         <nav>
-           <a href="#">Aa</a> |
-           <a href="#">Bb</a> |
-           <a href="#">Cc</a> |
-           <a href="#">Dd</a> |
-           <a href="#">Ee</a> |
-           <a href="#">Ff</a> |
-           <a href="#">Gg</a> |
-           <a href="#">Hh</a> |
-           <a href="#">Ii</a> |
-           <a href="#">Jj</a> |
-           <a href="#">Kk</a> |
-           <a href="#">Ll</a> |
-           <a href="#">Mm</a> |
-           <a href="#">Nn</a> |
-           <a href="#">Oo</a> |
-           <a href="#">Pp</a> |
-           <a href="#">Qq</a> |
-           <a href="#">Rr</a> |
-           <a href="#">Ss</a> |
-           <a href="#">Tt</a> |
-           <a href="#">Uu</a> |
-           <a href="#">Vv</a> |
-           <a href="#">Ww</a> |
-           <a href="#">Xx</a> |
-           <a href="#">Yy</a> |
-           <a href="#">Zz</a>
-         </nav>
-       </footer>
-       """
-    html_code += "</div>"
+    html_code += """
+                <footer>
+                <nav>
+                """
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'a.html') + '"> Aa </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'b.html') + '"> Bb </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'c.html') + '"> Cc </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'd.html') + '"> Dd </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'e.html') + '"> Ee </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'f.html') + '"> Ff </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'g.html') + '"> Gg </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'h.html') + '"> Hh </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'i.html') + '"> Ii </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'j.html') + '"> Jj </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'k.html') + '"> Kk </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'l.html') + '"> Ll </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'm.html') + '"> Mm </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'n.html') + '"> Nn </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'o.html') + '"> Oo </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'p.html') + '"> Pp </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'q.html') + '"> Qq </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'r.html') + '"> Rr </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 's.html') + '"> Ss </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 't.html') + '"> Tt </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'u.html') + '"> Uu </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'v.html') + '"> Vv </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'w.html') + '"> Ww </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'x.html') + '"> Xx </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'y.html') + '"> Yy </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'z.html') + '"> Zz </a>'
+    html_code += """
+                </nav>
+                </footer>
+            </div>
+            """
     html_code += " <!-- Sidebar bar -->\n"
     html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
                                                 'side_bar.js') + '" ' + 'type="text/javascript"></script>'
@@ -1077,15 +1160,14 @@ def gen_interface(interface, output_path):
     soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
     pretty_html = soup.prettify()
     try:
-        h_file = open(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'interfaces', interface.get_name() + '.html'), "w+")
+        with open(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'interfaces', interface.get_name() + '.html'), "w+") as h_file:
+            h_file.write(pretty_html)
+            h_file.close()
     except IOError:
         print('Could not open file!')
-    with h_file:
-        h_file.write(pretty_html)
-        h_file.close()
 
 
-def gen_trait(trait, output_path):
+def gen_trait(trait, output_path, content):
     namespace = trait.get_namespace()
     folder_path = namespace.get_curpath()
     filename = namespace.get_filename()
@@ -1277,43 +1359,44 @@ def gen_trait(trait, output_path):
 
     html_code += "</div>\n"
 
-    html_code += """ <footer>
-         <nav>
-           <a href="#">Aa</a> |
-           <a href="#">Bb</a> |
-           <a href="#">Cc</a> |
-           <a href="#">Dd</a> |
-           <a href="#">Ee</a> |
-           <a href="#">Ff</a> |
-           <a href="#">Gg</a> |
-           <a href="#">Hh</a> |
-           <a href="#">Ii</a> |
-           <a href="#">Jj</a> |
-           <a href="#">Kk</a> |
-           <a href="#">Ll</a> |
-           <a href="#">Mm</a> |
-           <a href="#">Nn</a> |
-           <a href="#">Oo</a> |
-           <a href="#">Pp</a> |
-           <a href="#">Qq</a> |
-           <a href="#">Rr</a> |
-           <a href="#">Ss</a> |
-           <a href="#">Tt</a> |
-           <a href="#">Uu</a> |
-           <a href="#">Vv</a> |
-           <a href="#">Ww</a> |
-           <a href="#">Xx</a> |
-           <a href="#">Yy</a> |
-           <a href="#">Zz</a>
-         </nav>
-       </footer>
-       """
-    html_code += "</div>"
+    html_code += """
+                <footer>
+                <nav>
+                """
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'a.html') + '"> Aa </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'b.html') + '"> Bb </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'c.html') + '"> Cc </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'd.html') + '"> Dd </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'e.html') + '"> Ee </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'f.html') + '"> Ff </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'g.html') + '"> Gg </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'h.html') + '"> Hh </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'i.html') + '"> Ii </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'j.html') + '"> Jj </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'k.html') + '"> Kk </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'l.html') + '"> Ll </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'm.html') + '"> Mm </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'n.html') + '"> Nn </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'o.html') + '"> Oo </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'p.html') + '"> Pp </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'q.html') + '"> Qq </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'r.html') + '"> Rr </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 's.html') + '"> Ss </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 't.html') + '"> Tt </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'u.html') + '"> Uu </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'v.html') + '"> Vv </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'w.html') + '"> Ww </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'x.html') + '"> Xx </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'y.html') + '"> Yy </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'z.html') + '"> Zz </a>'
+    html_code += """
+                </nav>
+                </footer>
+            </div>
+            """
     html_code += " <!-- Sidebar bar -->\n"
     html_code += '<script src="' + os.path.join(output_path, 'docs', 'js', 'side_bar.js') + '" ' + 'type="text/javascript"></script>'
     html_code += '<script src="' + os.path.join(output_path, 'docs', 'js', 'treeView.js') + '" ' + 'type="text/javascript"></script>'
-    html_code += '<script src="' + os.path.join(output_path, 'docs', 'js', 'jquery-1.7.min.js') + '" ' + 'type="text/javascript"></script>'
-    #<script type="text/javascript" src="js/popup.js"></script>
     html_code += """
      </body>
     </html>
@@ -1321,12 +1404,163 @@ def gen_trait(trait, output_path):
     soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
     pretty_html = soup.prettify()
     try:
-        h_file = open(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'traits', trait.get_name() + '.html'), "w+")
+        with open(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'traits', trait.get_name() + '.html'), "w+") as h_file:
+            h_file.write(pretty_html)
+            h_file.close()
     except IOError:
         print('Could not open file!')
-    with h_file:
-        h_file.write(pretty_html)
-        h_file.close()
+
+
+def gen_content_with(content, char, output_path):
+    html_code = r"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        """
+    html_code += '<link href="' + os.path.join(output_path, 'docs', 'css', 'treeViewSheet.css') + '" ' + 'media="all" rel="stylesheet"/>\n'
+    html_code += '<link href="' + os.path.join(output_path, 'docs', 'css', 'navbar-fixed-left.css') + '" ' + 'media="all" rel="stylesheet"/>\n'
+    html_code += '<link href="' + os.path.join(output_path, 'docs', 'css', 'font-awesome.min.css') + '" ' + 'media="all" rel="stylesheet"/>\n'
+    html_code += '<link href="' + os.path.join(output_path, 'docs', 'css', 'template.css') + '" ' + 'media="all" rel="stylesheet"/>\n'
+    html_code += '<link href="' + os.path.join(output_path, 'docs', 'css', 'bootstrap-combined.no-icons.min.css') + '" ' + 'media="all" rel="stylesheet"/>\n'
+    html_code += r"""
+    <title> Title </title>
+    </head>
+    <body>
+        <!-- Page content -->
+        <div class="main">
+        """
+    html_code += """
+            <div>
+                <h2> Classes </h2>
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <td> Class </td> 
+                    <td> Folder </td> 
+                    <td> File </td>
+                    </tr>
+                </thead>
+                <tbody>
+                """
+    if len(content.get_classes_by(char)):
+        for class_ in content.get_classes_by(char):
+            html_code += "<tr>"
+            nm = class_.get_namespace()
+            folder_path = nm.get_curpath()
+            filename = nm.get_filename()
+            html_code += '<td><a href="#">' + class_.get_name() + '</a></td>'
+            html_code += '<td><p>' + folder_path + '</p></td>'
+            html_code += '<td><p>' + filename + '</p></td>'
+            html_code += '</tr>'
+    html_code += "</tbody></table></div>"
+    html_code += """
+                <div>
+                    <h2> Interfaces </h2>
+                    <table class="table table-hover">
+                    <thead>
+                        <tr>
+                        <td> Interface </td> 
+                        <td> Folder </td> 
+                        <td> File </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    """
+    if len(content.get_interfaces_by(char)):
+        for interface in content.get_interfaces_by(char):
+            html_code += "<tr>"
+            nm = interface.get_namespace()
+            folder_path = nm.get_curpath()
+            filename = nm.get_filename()
+            html_code += '<td><a href="#">' + interface.get_name() + '</a></td>'
+            html_code += '<td><p>' + folder_path + '</p></td>'
+            html_code += '<td><p>' + filename + '</p></td>'
+            html_code += '</tr>'
+    html_code += "</tbody></table></div>"
+    html_code += """
+                <div>
+                    <h2> Traits </h2>
+                    <table class="table table-hover">
+                    <thead>
+                        <tr>
+                        <td> Trait </td> 
+                        <td> Folder </td> 
+                        <td> File </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    """
+    if len(content.get_traits_by(char)):
+        for trait in content.get_traits_by(char):
+            html_code += "<tr>"
+            nm = trait.get_namespace()
+            folder_path = nm.get_curpath()
+            filename = nm.get_filename()
+            html_code += '<td><a href="#">' + trait.get_name() + '</a></td>'
+            html_code += '<td><p>' + folder_path + '</p></td>'
+            html_code += '<td><p>' + filename + '</p></td>'
+            html_code += '</tr>'
+    html_code += "</tbody></table></div>"
+    html_code += """
+            <footer>
+            <nav>
+            """
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'a.html') + '"> Aa </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'b.html') + '"> Bb </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'c.html') + '"> Cc </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'd.html') + '"> Dd </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'e.html') + '"> Ee </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'f.html') + '"> Ff </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'g.html') + '"> Gg </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'h.html') + '"> Hh </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'i.html') + '"> Ii </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'j.html') + '"> Jj </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'k.html') + '"> Kk </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'l.html') + '"> Ll </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'm.html') + '"> Mm </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'n.html') + '"> Nn </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'o.html') + '"> Oo </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'p.html') + '"> Pp </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'q.html') + '"> Qq </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'r.html') + '"> Rr </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 's.html') + '"> Ss </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 't.html') + '"> Tt </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'u.html') + '"> Uu </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'v.html') + '"> Vv </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'w.html') + '"> Ww </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'x.html') + '"> Xx </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'y.html') + '"> Yy </a> |'
+    html_code += '<a href="' + os.path.join(content.get_output_path(), 'docs', 'content_A-Z', 'z.html') + '"> Zz </a>'
+    html_code += """
+            </nav>
+            </footer>
+        </div>
+        """
+    html_code += " <!-- Sidebar bar -->\n"
+    html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
+                                                'side_bar.js') + '" ' + 'type="text/javascript"></script>'
+    html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
+                                                'treeView.js') + '" ' + 'type="text/javascript"></script>'
+    html_code += """
+    </body>
+    </html>
+   """
+    soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
+    pretty_html = soup.prettify()
+    try:
+        with open(
+                os.path.join(output_path, 'docs', 'content_A-Z', char + '.html'), "w+") as h_file:
+            h_file.write(pretty_html)
+            h_file.close()
+    except IOError:
+        print('Could not open file!')
+
+
+def gen_content(content, output_path):
+    os.makedirs(os.path.join(output_path, 'docs', 'content_A-Z'), 777, True)
+    for char in ascii_lowercase:
+        gen_content_with(content, char, output_path)
 
 
 def gen_preload(folder_path, output_path):
@@ -1337,24 +1571,24 @@ def gen_preload(folder_path, output_path):
     # Source path
 
     # css
-    source_bootstrap = 'web/css/bootstrap-combined.no-icons.min.css'
-    source_font = 'web/css/font-awesome.min.css'
-    source_navbar = 'web/css/navbar-fixed-left.css'
-    source_popup = 'web/css/popup.css'
-    source_template = 'web/css/template.css'
-    source_tree_view = 'web/css/treeViewSheet.css'
+    source_bootstrap = 'myapp/web/css/bootstrap-combined.no-icons.min.css'
+    source_font = 'myapp/web/css/font-awesome.min.css'
+    source_navbar = 'myapp/web/css/navbar-fixed-left.css'
+    source_popup = 'myapp/web/css/popup.css'
+    source_template = 'myapp/web/css/template.css'
+    source_tree_view = 'myapp/web/css/treeViewSheet.css'
 
     # js
 
-    source_jquery = 'web/js/jquery-1.7.min.js'
-    source_tree_view_js = 'web/js/treeView.js'
+    source_jquery = 'myapp/web/js/jquery-1.7.min.js'
+    source_tree_view_js = 'myapp/web/js/treeView.js'
 
     # font
-    source_font_otf = 'web/font/FontAwesome.otf'
-    source_font_eot = 'web/font/fontawesome-webfont.eot'
-    source_font_svg = 'web/font/fontawesome-webfont.svg'
-    source_font_ttf = 'web/font/fontawesome-webfont.ttf'
-    source_font_woff = 'web/font/fontawesome-webfont.woff'
+    source_font_otf = 'myapp/web/font/FontAwesome.otf'
+    source_font_eot = 'myapp/web/font/fontawesome-webfont.eot'
+    source_font_svg = 'myapp/web/font/fontawesome-webfont.svg'
+    source_font_ttf = 'myapp/web/font/fontawesome-webfont.ttf'
+    source_font_woff = 'myapp/web/font/fontawesome-webfont.woff'
 
     # Destination path
 
@@ -1403,28 +1637,28 @@ def gen_hierarchy(folder_path):
             os.makedirs(dirpath + '\\' + 'docs' + '\\' + filename.split('.')[0], 777, True)
 
 
-def gen_namespace_hierarchy(namespace, output_path):
+def gen_namespace_hierarchy(namespace, output_path, content):
     filename = namespace.get_filename()
     os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link()), 777, True)
-    gen_namespace(namespace, output_path)
+    gen_namespace(namespace, output_path, content)
 
     os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'classes'),
                 777, True)
     for class_ in namespace.get_classes():
-        gen_class(class_, output_path)
+        gen_class(class_, output_path, content)
 
     os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'interfaces'),
                 777, True)
     for interface in namespace.get_interfaces():
-        gen_interface(interface, output_path)
+        gen_interface(interface, output_path, content)
 
     os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'traits'),
                 777, True)
     for trait in namespace.get_traits():
-        gen_trait(trait, output_path)
+        gen_trait(trait, output_path, content)
 
     for nm in namespace.get_child_namespaces():
-        gen_namespace_hierarchy(nm, output_path)
+        gen_namespace_hierarchy(nm, output_path, content)
 
 
 def main():
