@@ -57,7 +57,7 @@ def gen_sidebar(folder_path, output_path, is_rec=True, is_file=False, filename='
 
 
 def gen_main_page(output_path):
-    os.makedirs(os.path.join(output_path, 'docs'), 7, True)
+    os.makedirs(os.path.join(output_path, 'docs'), os.umask(0o007), True)
     html_code = """<!DOCTYPE html> 
 <html lang="en">
 <head>
@@ -105,7 +105,7 @@ def gen_main_page(output_path):
 
 
 def gen_folder(read_me, output_path, content):
-    os.makedirs(os.path.join(output_path, 'docs'), 7, True)
+    os.makedirs(os.path.join(output_path, 'docs'), os.umask(0o007), True)
     html_code = """<!DOCTYPE html> 
         <html lang="en">
         <head>
@@ -178,7 +178,7 @@ def gen_folder(read_me, output_path, content):
 
 def gen_file(root_namespace, folder_path, output_path, content):
     filename = root_namespace.get_filename()
-    os.makedirs(os.path.join(output_path, 'docs', filename), 7, True)
+    os.makedirs(os.path.join(output_path, 'docs', filename), os.umask(0o007), True)
     html_code = """<!DOCTYPE html> 
     <html lang="en">
     <head>
@@ -1558,15 +1558,15 @@ def gen_content_with(content, char, output_path):
 
 
 def gen_content(content, output_path):
-    os.makedirs(os.path.join(output_path, 'docs', 'content_A-Z'), 7, True)
+    os.makedirs(os.path.join(output_path, 'docs', 'content_A-Z'), os.umask(0o007), True)
     for char in ascii_lowercase:
         gen_content_with(content, char, output_path)
 
 
 def gen_preload(folder_path, output_path):
-    os.makedirs(os.path.join(output_path, 'docs', 'css'), 7, True)
-    os.makedirs(os.path.join(output_path, 'docs', 'js'), 7, True)
-    os.makedirs(os.path.join(output_path, 'docs', 'font'), 7, True)
+    os.makedirs(os.path.join(output_path, 'docs', 'css'), os.umask(0o007), True)
+    os.makedirs(os.path.join(output_path, 'docs', 'js'), os.umask(0o007), True)
+    os.makedirs(os.path.join(output_path, 'docs', 'font'), os.umask(0o007), True)
 
     # Source path
 
@@ -1631,21 +1631,22 @@ def gen_preload(folder_path, output_path):
 
 def gen_namespace_hierarchy(namespace, output_path, content):
     filename = namespace.get_filename()
-    os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link()), 7, True)
+    os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link()), os.umask(0o007), True)
     gen_namespace(namespace, output_path, content)
 
     os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'classes'),
-                7, True)
+                os.umask(os.umask(0o007)), True)
     for class_ in namespace.get_classes():
         gen_class(class_, output_path, content)
 
+
     os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'interfaces'),
-                7, True)
+                os.umask(os.umask(0o007)), True)
     for interface in namespace.get_interfaces():
         gen_interface(interface, output_path, content)
 
     os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'traits'),
-                7, True)
+                os.umask(os.umask(0o007)), True)
     for trait in namespace.get_traits():
         gen_trait(trait, output_path, content)
 
