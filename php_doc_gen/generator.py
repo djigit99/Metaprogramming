@@ -56,7 +56,11 @@ def gen_sidebar(folder_path, output_path, is_rec=True, is_file=False, filename='
 
 
 def gen_main_page(output_path):
-    os.makedirs(os.path.join(output_path, 'docs'), os.umask(0o007), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs'), 0o777, True)
+    finally:
+        os.umask(original_umask)
     html_code = """<!DOCTYPE html> 
 <html lang="en">
 <head>
@@ -104,7 +108,11 @@ def gen_main_page(output_path):
 
 
 def gen_folder(read_me, output_path, content):
-    os.makedirs(os.path.join(output_path, 'docs'), os.umask(0o007), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs'), 0o777, True)
+    finally:
+        os.umask(original_umask)
     html_code = """<!DOCTYPE html> 
         <html lang="en">
         <head>
@@ -177,7 +185,11 @@ def gen_folder(read_me, output_path, content):
 
 def gen_file(root_namespace, folder_path, output_path, content):
     filename = root_namespace.get_filename()
-    os.makedirs(os.path.join(output_path, 'docs', filename), os.umask(0o007), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', filename), 0o777, True)
+    finally:
+        os.umask(original_umask)
     html_code = """<!DOCTYPE html> 
     <html lang="en">
     <head>
@@ -1557,15 +1569,31 @@ def gen_content_with(content, char, output_path):
 
 
 def gen_content(content, output_path):
-    os.makedirs(os.path.join(output_path, 'docs', 'content_A-Z'), os.umask(0o007), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', 'content_A-Z'), 0o777, True)
+    finally:
+        os.umask(original_umask)
     for char in ascii_lowercase:
         gen_content_with(content, char, output_path)
 
 
 def gen_preload(folder_path, output_path):
-    os.makedirs(os.path.join(output_path, 'docs', 'css'), os.umask(0o007), True)
-    os.makedirs(os.path.join(output_path, 'docs', 'js'), os.umask(0o007), True)
-    os.makedirs(os.path.join(output_path, 'docs', 'font'), os.umask(0o007), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', 'css'), 0o777, True)
+    finally:
+        os.umask(original_umask)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', 'js'), 0o777, True)
+    finally:
+        os.umask(original_umask)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', 'font'), 0o777, True)
+    finally:
+        os.umask(original_umask)
 
     # Source path
 
@@ -1630,22 +1658,37 @@ def gen_preload(folder_path, output_path):
 
 def gen_namespace_hierarchy(namespace, output_path, content):
     filename = namespace.get_filename()
-    os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link()), os.umask(0o007), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link()), 0o777, True)
+    finally:
+        os.umask(original_umask)
     gen_namespace(namespace, output_path, content)
 
-    os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'classes'),
-                os.umask(os.umask(0o007)), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'classes'),
+                    0o777, True)
+    finally:
+        os.umask(original_umask)
     for class_ in namespace.get_classes():
         gen_class(class_, output_path, content)
 
-
-    os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'interfaces'),
-                os.umask(os.umask(0o007)), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'interfaces'),
+                    0o777, True)
+    finally:
+        os.umask(original_umask)
     for interface in namespace.get_interfaces():
         gen_interface(interface, output_path, content)
 
-    os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'traits'),
-                os.umask(os.umask(0o007)), True)
+    try:
+        original_umask = os.umask(0)
+        os.makedirs(os.path.join(output_path, 'docs', filename, namespace.get_link(), 'traits'),
+                    0o777, True)
+    finally:
+        os.umask(original_umask)
     for trait in namespace.get_traits():
         gen_trait(trait, output_path, content)
 
