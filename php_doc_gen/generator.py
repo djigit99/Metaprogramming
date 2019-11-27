@@ -4,7 +4,6 @@ from os.path import isfile, isdir, join, splitext, basename
 from string import ascii_lowercase
 from shutil import copyfile
 from bs4 import BeautifulSoup
-import php_doc_gen
 from .items import AccessModifier
 
 
