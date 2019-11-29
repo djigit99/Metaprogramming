@@ -1,0 +1,119 @@
+INFO:root:GOOD STYLE: docblock summary is MyClass title
+INFO:root:GOOD STYLE: docblock description is MyClassdescription
+INFO:root:GOOD STYLE: Tag_Package parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no author email
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: Tag_Version parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: Tag_Var parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: Tag_Var parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: Tag_Var parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is Simple method title
+INFO:root:GOOD STYLE: docblock description is Simple method description
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is Title
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: docblock summary is Title
+INFO:root:GOOD STYLE: docblock description is description
+INFO:root:GOOD STYLE: Tag_Version parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no docblock tag
+INFO:root:GOOD STYLE: docblock summary is title
+INFO:root:GOOD STYLE: docblock description is description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:WARN: line 35 } is not recognized in global state
+INFO:root:WARN: line 58 echo mn\c; is not recognized in global state
+INFO:root:WARN: line 60 echo c; is not recognized in global state
+INFO:root:WARN: line 61 fun3c(4); is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is Title
+INFO:root:GOOD STYLE: docblock description is description
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is MyClass title
+INFO:root:GOOD STYLE: docblock description is MyClassdescription
+INFO:root:GOOD STYLE: Tag_Package parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no author email
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: Tag_Version parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:ERROR: tag not found
+INFO:root:Error: can't parse the tag
+INFO:root:ERROR: tag not found
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is Title
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: docblock summary is title
+INFO:root:GOOD STYLE: docblock description is description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is title
+INFO:root:GOOD STYLE: docblock description is description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is MyClass title
+INFO:root:GOOD STYLE: docblock description is MyClassdescription
+INFO:root:GOOD STYLE: Tag_Package parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no author email
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: Tag_Version parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:ERROR: tag not found
+INFO:root:Error: can't parse the tag
+INFO:root:ERROR: tag not found
+INFO:root:Error: can't parse the tag
+INFO:root:WARN: line 45 } is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is Title
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: docblock summary is MyClass title
+INFO:root:GOOD STYLE: docblock description is MyClassdescription
+INFO:root:GOOD STYLE: Tag_Package parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no author email
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: Tag_Version parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:ERROR: tag not found
+INFO:root:Error: can't parse the tag
+INFO:root:ERROR: tag not found
+INFO:root:Error: can't parse the tag
+INFO:root:WARN: line 44 } is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is Title
+INFO:root:BAD STYLE: no docblock description

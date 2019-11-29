@@ -1,6 +1,8 @@
 from .controller import Controller
 from os.path import isfile, isdir, dirname
 import argparse
+import logging
+
 
 
 class Flags(object):
@@ -8,6 +10,9 @@ class Flags(object):
 
 
 def main():
+    with open('php_doc_gen.log', 'w') as f:
+        pass
+    logging.basicConfig(filename='php_doc_gen.log', level=logging.INFO)
     parser = argparse.ArgumentParser(description='PHP Documentation Generator')
     parser.add_argument("p", type=str, help="Path to directory or file being documented")
     parser.add_argument("-t", required=False, type=str, help="Path to directory where to store documentation files(default: current directory)")
