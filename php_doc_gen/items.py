@@ -343,6 +343,9 @@ class Namespace(Global):
             cur_nm = cur_nm.parent_namespace
         return cur_nm
 
+    def is_root(self):
+        return self == self.get_root_namespace()
+
     def get_curpath(self):
         return self.curpath
 

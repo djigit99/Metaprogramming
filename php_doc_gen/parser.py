@@ -123,10 +123,10 @@ class Parser:
                     self.root_namespace.add_global_var(parser_var(line))
                 elif is_define_line(line):
                     self.is_first_level_docblock = False
-                    self.root_namespace.add_constants(parser_define(line))
+                    self.cur_namespace.add_constants(parser_define(line))
                 elif is_const_line(line):
                     self.is_first_level_docblock = False
-                    self.root_namespace.add_constants(parser_const(line))
+                    self.cur_namespace.add_constants(parser_const(line))
                 elif is_function_line(line):
                     self.is_first_level_docblock = False
                     self.cur_function = parser_function(line)

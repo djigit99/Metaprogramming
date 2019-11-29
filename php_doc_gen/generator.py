@@ -473,41 +473,42 @@ def gen_namespace(namespace, output_path, content):
      </table>
    </div>
    """
-    html_code += """ <div>
-     <h2>
-      Global vars
-     </h2>
-     <table class="table table-hover">
-       <thead>
-         <tr>
-           <td> Name </td>
-           <td> Title </td>
-           <td> Description </td>
-           <td> Type </td>
-         </tr>
-       </thead> """
-    if len(namespace.get_global_vars()):
-        html_code += "<tbody>\n"
-        for global_var in namespace.get_global_vars():
-            html_code += """
-       <tr>
-        <td>
-         <p>""" + global_var.get_name() + """</p>
-        </td>
-        <td>
-         <em>""" + global_var.get_title() + """</em>
-        </td>
-       <td>
-        <em> """ + global_var.get_description() + """</em>
-       </td>
-       <td>
-        <em> """ + global_var.get_type() + """</em>
-       </td>
-       </tr> """
-        html_code += "</tbody>\n"
-    html_code += """
-     </table>
-   </div>
+    if namespace.is_root():
+        html_code += """ <div>
+         <h2>
+          Global vars
+         </h2>
+         <table class="table table-hover">
+           <thead>
+             <tr>
+               <td> Name </td>
+               <td> Title </td>
+               <td> Description </td>
+               <td> Type </td>
+             </tr>
+           </thead> """
+        if len(namespace.get_global_vars()):
+            html_code += "<tbody>\n"
+            for global_var in namespace.get_global_vars():
+                html_code += """
+           <tr>
+            <td>
+             <p>""" + global_var.get_name() + """</p>
+            </td>
+            <td>
+             <em>""" + global_var.get_title() + """</em>
+            </td>
+           <td>
+            <em> """ + global_var.get_description() + """</em>
+           </td>
+           <td>
+            <em> """ + global_var.get_type() + """</em>
+           </td>
+           </tr> """
+            html_code += "</tbody>\n"
+        html_code += """
+         </table>
+       </div>
    """
     html_code += """<div>
      <h2>
@@ -984,9 +985,6 @@ def gen_class(class_, output_path, content):
                                                 'side_bar.js') + '" ' + 'type="text/javascript"></script>'
     html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
                                                 'treeView.js') + '" ' + 'type="text/javascript"></script>'
-    html_code += '<script src="' + os.path.join(output_path, 'docs', 'js',
-                                                'jquery-1.7.min.js') + '" ' + 'type="text/javascript"></script>'
-    # <script type="text/javascript" src="js/popup.js"></script>
     html_code += """
      </body>
     </html>
