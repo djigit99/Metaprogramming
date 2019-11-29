@@ -673,14 +673,13 @@ p__""" + (namespace.get_name() if namespace.get_name() != '/' else '_') + "_" + 
     soup = BeautifulSoup(html_code, 'html.parser')  # make BeautifulSoup
     pretty_html = soup.prettify()
     try:
-        h_file = open(
+        with open(
             os.path.join(output_path, 'docs', filename, namespace.get_link(), (namespace.get_name() if namespace.get_name() != '/' else 'root_nm') + '.html'),
-            "w+")
+            "w+") as h_file:
+            h_file.write(pretty_html)
+            h_file.close()
     except IOError:
         print('Could not open file!')
-    with h_file:
-        h_file.write(pretty_html)
-        h_file.close()
     try:
         with open("php_doc_gen/web/js/test_popup.js", "a") as h_file:
             h_file.write(js_code)
@@ -884,6 +883,7 @@ def gen_class(class_, output_path, content):
         html_code += "<article>\n"
         html_code += "<h3 class=\"public\">" + property_.get_name() + "</h3>\n"
         html_code += "<pre>" + property_.get_type() + "</pre>\n"
+        html_code += "<em>" + property_.get_description() + "</em>"
         html_code += "</article>\n"
 
     for property_ in protected_properties:
@@ -891,6 +891,7 @@ def gen_class(class_, output_path, content):
         html_code += "<article>\n"
         html_code += "<h3 class=\"protected\">" + property_.get_name() + "</h3>\n"
         html_code += "<pre>" + property_.get_type() + "</pre>\n"
+        html_code += "<em>" + property_.get_description() + "</em>"
         html_code += "</article>\n"
 
     for property_ in private_properties:
@@ -898,6 +899,7 @@ def gen_class(class_, output_path, content):
         html_code += "<article>\n"
         html_code += "<h3 class=\"private\">" + property_.get_name() + "</h3>\n"
         html_code += "<pre>" + property_.get_type() + "</pre>\n"
+        html_code += "<em>" + property_.get_description() + "</em>"
         html_code += "</article>\n"
 
     html_code += "</div>\n"
@@ -913,8 +915,10 @@ def gen_class(class_, output_path, content):
         html_code += "<h3 class=\"public\">" + method.get_name() + "</h3>\n"
         html_code += "<pre>" + method.get_name() + "( "
         for param in method.get_parameters():
-            html_code += param.get_name() + " : <em>" + param.get_type() + "</em>, "
-        html_code += " )</pre>\n"
+            html_code += param.get_name() + " : <em>" + param.get_type() + "</em>"
+            if method.get_parameters().index(param) != len(method.get_parameters()) -1:
+                html_code += ', '
+        html_code += " ) : <em>" + method.get_return_type() + "</em></pre>\n"
         html_code += method.get_title() + "<br>\n"
         html_code += "<em>" + method.get_description() + "</em>\n"
         html_code += "</article>\n"

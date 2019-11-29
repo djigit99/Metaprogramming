@@ -189,9 +189,14 @@ class Parser:
                     prev_state = state
                     state = State.IN_DOCBLOCK
                 elif is_property_var_line(line):
-                    self.cur_class.add_property(parser_property_var(line))
+                    property_ = parser_property_var(line)
+                    if self.is_prev_docblock:
+                        property_.process_docblock(self.cur_docblock)
+                    self.cur_class.add_property(property_)
+                    self.is_prev_docblock = False
                 elif is_property_const_line(line):
                     self.cur_class.add_constant(parser_property_const(line))
+                    self.is_prev_docblock = False
                 elif is_method_line(line):
                     prev_state = state
                     state = state.IN_METHOD
@@ -208,6 +213,7 @@ class Parser:
                     state = State.IN_DOCBLOCK
                 elif is_property_const_line(line):
                     self.cur_interface.add_constant(parser_property_const(line))
+                    self.is_prev_docblock = False
                 elif is_method_line(line):
                     self.cur_interface.add_method(parser_method(line))
                     self.braces_diff = 0
@@ -220,7 +226,11 @@ class Parser:
                     prev_state = state
                     state = State.IN_DOCBLOCK
                 elif is_property_var_line(line):
-                    self.cur_trait.add_property(parser_property_var(line))
+                    property_ = parser_property_var(line)
+                    if self.is_prev_docblock:
+                        property_.process_docblock(self.cur_docblock)
+                    self.cur_trait.add_property(property_)
+                    self.is_prev_docblock = False
                 elif is_method_line(line):
                     prev_state = state
                     state = state.IN_METHOD
@@ -237,6 +247,8 @@ class Parser:
                 if self.braces_diff == 0:
                     source_block.append(line)
                     self.cur_method.set_source_body(source_block)
+                    if self.is_prev_docblock:
+                        self.cur_method.process_docblock(self.cur_docblock)
                     source_block = []
                     state = prev_state
                     self.is_prev_docblock = False
@@ -383,7 +395,7 @@ def parser_tag(str):
             var_desc_pos = str.find(' ')
         else:
             var_desc_pos = len(str)
-        var_name = str[:var_desc_pos]
+        var_name = str[1:var_desc_pos]
         if not len(var_name):
             logging.info("BAD STYLE: var name missed")
             return

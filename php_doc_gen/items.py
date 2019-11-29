@@ -14,8 +14,14 @@ class Global:
     def get_title(self):
         return self.title
 
+    def set_title(self, title):
+        self.title = title
+
     def get_description(self):
         return self.description
+
+    def set_description(self, description):
+        self.description = description
 
 
 class Global_var(Global):
@@ -79,6 +85,9 @@ class Function(Global):
         return self.source_body
 
     def process_docblock(self, docblock):
+
+        self.set_title(docblock.get_summary())
+        self.set_description(docblock.get_description())
 
         tg_return = docblock.get_tags_by_name('@return')
         if tg_return is not None:
@@ -246,10 +255,11 @@ class Property(Item):
     def process_docblock(self, docblock):
 
         tgs_var = docblock.get_tags_by_name('@var')
-        if tgs_var is not None:
+        if len(tgs_var):
             for tg_var in tgs_var:
                 if tg_var.get_name() == self.get_name():
                     self.set_type(tg_var.get_type())
+                    self.set_description(tg_var.get_description())
 
 
 class Const(Item):
@@ -298,12 +308,14 @@ class Method(Item):
 
     def process_docblock(self, docblock):
 
+        self.set_title(docblock.get_summary())
+        self.set_description(docblock.get_description())
         tg_return = docblock.get_tags_by_name('@return')
-        if tg_return is not None:
+        if len(tg_return):
             self.return_type = tg_return[0].get_type()
 
         tgs_param = docblock.get_tags_by_name('@param')
-        if tgs_param is not None:
+        if len(tgs_param):
             for tg_param in tgs_param:
                 param = self.find_by_param_name(tg_param.get_name())
                 if param is not None:
