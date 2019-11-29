@@ -38,6 +38,8 @@ function fun3c($var)
 
 }
 
+define('myconst', 2);
+
 trait Hello
 {
     public function sayHello()

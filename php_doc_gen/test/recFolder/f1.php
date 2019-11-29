@@ -27,17 +27,25 @@ function fucn()
  * @package none
  * @author Andrii Perun
  * @version 1.3
- * @access public
- * @see reference/to/class
  */
 class MyClass
 {
-    const CONSTANT = '�������� ���������';
+    const CONSTANT = 'const value';
+		/**
+		* @var string $var1 Description for var1
+		*/
     public $var1;
+		/**
+		* @var string $var2 Description for var2
+		*/
     protected $var2;
+		/**
+		* @var string $var3
+		*/
     private $var3;
 
-    function __construct() {
+    function __construct()
+		{
        print "MyClass constructor\n";
        print op;
     }
@@ -46,9 +54,17 @@ class MyClass
     {
        print "Delete " . __CLASS__  . "\n";
     }
-
-    function method()
+		/**
+		* Simple method title
+		* Simple method description
+		*
+		* @return string
+		* @param string $param3
+		* @param string $param1
+		*/
+    function method($param1, $param2)
     {
+			return $param1 + $param2;
     }
 }
 
