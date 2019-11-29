@@ -1460,7 +1460,9 @@ def gen_content_with(content, char, output_path):
             nm = class_.get_namespace()
             folder_path = nm.get_curpath()
             filename = nm.get_filename()
-            html_code += '<td><a href="#">' + class_.get_name() + '</a></td>'
+            output_dir = os.path.join(content.get_output_path(), folder_path[folder_path.find(content.get_dirname()) + len(content.get_dirname())+1:],
+                                      'docs', filename, nm.get_link(), 'classes', class_.get_name() + '.html')
+            html_code += '<td><a href="' + output_dir + '">' + class_.get_name() + '</a></td>'
             html_code += '<td><p>' + folder_path + '</p></td>'
             html_code += '<td><p>' + filename + '</p></td>'
             html_code += '</tr>'
@@ -1484,7 +1486,11 @@ def gen_content_with(content, char, output_path):
             nm = interface.get_namespace()
             folder_path = nm.get_curpath()
             filename = nm.get_filename()
-            html_code += '<td><a href="#">' + interface.get_name() + '</a></td>'
+            output_dir = os.path.join(content.get_output_path(), folder_path[
+                                                                 folder_path.find(content.get_dirname()) + len(
+                                                                     content.get_dirname()) + 1:],
+                                      'docs', filename, nm.get_link(), 'interfaces', interface.get_name() + '.html')
+            html_code += '<td><a href="' + output_dir + '">' + interface.get_name() + '</a></td>'
             html_code += '<td><p>' + folder_path + '</p></td>'
             html_code += '<td><p>' + filename + '</p></td>'
             html_code += '</tr>'
@@ -1508,7 +1514,11 @@ def gen_content_with(content, char, output_path):
             nm = trait.get_namespace()
             folder_path = nm.get_curpath()
             filename = nm.get_filename()
-            html_code += '<td><a href="#">' + trait.get_name() + '</a></td>'
+            output_dir = os.path.join(content.get_output_path(), folder_path[
+                                                                 folder_path.find(content.get_dirname()) + len(
+                                                                     content.get_dirname()) + 1:],
+                                      'docs', filename, nm.get_link(), 'traits', trait.get_name() + '.html')
+            html_code += '<td><a href="' + output_dir + '">' + trait.get_name() + '</a></td>'
             html_code += '<td><p>' + folder_path + '</p></td>'
             html_code += '<td><p>' + filename + '</p></td>'
             html_code += '</tr>'

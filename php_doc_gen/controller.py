@@ -55,7 +55,7 @@ def doc_is_rec_folder(path, output_path, content, is_rec=True):
 class Controller:
 
     def __init__(self, path, output_path, is_folder=False, is_rec_search=False):
-        self.content = Content(output_path)
+        self.content = Content(output_path, basename(path))
 
         gen_main_page(output_path)
         if not is_folder:

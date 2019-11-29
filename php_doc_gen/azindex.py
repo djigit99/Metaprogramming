@@ -1,6 +1,6 @@
 class Content:
 
-    def __init__(self, output_path):
+    def __init__(self, output_path, dirname):
         self.classes = {'a': [], 'b': [], 'c': [], 'd': [], 'e': [], 'f': [], 'g': [], 'h': [],
                         'i': [], 'j': [], 'k': [], 'l': [], 'm': [], 'n': [], 'o': [], 'p': [],
                         'q': [], 'r': [], 's': [], 't': [], 'u': [], 'v': [], 'w': [], 'x': [],
@@ -14,6 +14,7 @@ class Content:
                         'q': [], 'r': [], 's': [], 't': [], 'u': [], 'v': [], 'w': [], 'x': [],
                         'y': [], 'z': []}
         self.output_path = output_path
+        self.dirname = dirname
 
     def add_class_with(self, char, class_):
         self.classes.get(char).append(class_)
@@ -35,6 +36,9 @@ class Content:
 
     def get_output_path(self):
         return self.output_path
+
+    def get_dirname(self):
+        return self.dirname
 
     def process_namespace(self, namespace):
         for class_ in namespace.get_classes():
