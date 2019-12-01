@@ -1,6 +1,6 @@
 import os
 from os import listdir
-from os.path import isfile, isdir, join, splitext, basename
+from os.path import isfile, isdir, join, splitext, basename, abspath, dirname
 from string import ascii_lowercase
 from shutil import copyfile
 from bs4 import BeautifulSoup
@@ -1610,23 +1610,23 @@ def gen_preload(folder_path, output_path):
     # Source path
 
     # css
-    source_bootstrap = 'php_doc_gen/web/css/bootstrap-combined.no-icons.min.css'
-    source_font = 'php_doc_gen/web/css/font-awesome.min.css'
-    source_navbar = 'php_doc_gen/web/css/navbar-fixed-left.css'
-    source_popup = 'php_doc_gen/web/css/popup.css'
-    source_template = 'php_doc_gen/web/css/template.css'
-    source_tree_view = 'php_doc_gen/web/css/treeViewSheet.css'
+    source_bootstrap = os.path.join(dirname(__file__), 'web', 'css', 'bootstrap-combined.no-icons.min.css')
+    source_font = os.path.join(dirname(__file__), 'web', 'css', 'font-awesome.min.css')
+    source_navbar = os.path.join(dirname(__file__), 'web', 'css', 'navbar-fixed-left.css')
+    source_popup = os.path.join(dirname(__file__), 'web', 'css', 'popup.css')
+    source_template = os.path.join(dirname(__file__), 'web', 'css', 'template.css')
+    source_tree_view = os.path.join(dirname(__file__), 'web', 'css', 'treeViewSheet.css')
 
     # js
-    source_jquery = 'php_doc_gen/web/js/jquery-1.7.min.js'
-    source_tree_view_js = 'php_doc_gen/web/js/treeView.js'
+    source_jquery = os.path.join(dirname(__file__), 'web', 'js', 'jquery-1.7.min.js')
+    source_tree_view_js = os.path.join(dirname(__file__), 'web', 'js', 'treeView.js')
 
     # font
-    source_font_otf = 'php_doc_gen/web/font/FontAwesome.otf'
-    source_font_eot = 'php_doc_gen/web/font/fontawesome-webfont.eot'
-    source_font_svg = 'php_doc_gen/web/font/fontawesome-webfont.svg'
-    source_font_ttf = 'php_doc_gen/web/font/fontawesome-webfont.ttf'
-    source_font_woff = 'php_doc_gen/web/font/fontawesome-webfont.woff'
+    source_font_otf = os.path.join(dirname(__file__), 'web', 'font', 'FontAwesome.otf')
+    source_font_eot = os.path.join(dirname(__file__), 'web', 'font', 'fontawesome-webfont.eot')
+    source_font_svg = os.path.join(dirname(__file__), 'web', 'font', 'fontawesome-webfont.svg')
+    source_font_ttf = os.path.join(dirname(__file__), 'web', 'font', 'fontawesome-webfont.ttf')
+    source_font_woff = os.path.join(dirname(__file__), 'web', 'font', 'fontawesome-webfont.woff')
 
     # Destination path
 
