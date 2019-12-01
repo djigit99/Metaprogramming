@@ -1,5 +1,6 @@
 from .controller import Controller
-from os.path import isfile, isdir, dirname
+from os.path import isfile, isdir, dirname, abspath
+from os import sep
 import argparse
 import logging
 
@@ -36,6 +37,13 @@ def main():
             exit(1)
         else:
             pass
+        Flags.p = abspath(Flags.p)
+        Flags.t = abspath(Flags.t)
+        print(Flags.p)
+        if Flags.p.endswith(sep):
+            Flags.p = Flags.p[:-1]
+        if Flags.t.endswith(sep):
+            Flags.t = Flags.t[:-1]
         if Flags.r:
             Controller(Flags.p, Flags.t, True, True)
         else:
