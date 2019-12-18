@@ -90,7 +90,7 @@ class Function(Global):
         self.set_description(docblock.get_description())
 
         tg_return = docblock.get_tags_by_name('@return')
-        if tg_return is not None:
+        if tg_return is not None and len(tg_return) > 0:
             self.return_type = tg_return[0].get_type()
 
         tgs_param = docblock.get_tags_by_name('@param')
@@ -153,6 +153,10 @@ class Class(Global):
     def get_inherited_interface(self):
         return self.implements
 
+    def process_docblock(self, docblock):
+        self.set_title(docblock.get_summary())
+        self.set_description(docblock.get_description())
+
 
 class Interface(Global):
     def __init__(self, name, namespace, parents=[]):
@@ -193,6 +197,10 @@ class Interface(Global):
     def get_parents(self):
         return self.parents
 
+    def process_docblock(self, docblock):
+        self.set_title(docblock.get_summary())
+        self.set_description(docblock.get_description())
+
 
 class Trait(Global):
 
@@ -222,6 +230,10 @@ class Trait(Global):
 
     def get_methods_with_mode(self, mod):
         return [method for method in self.methods if method.get_mod() == mod]
+
+    def process_docblock(self, docblock):
+        self.set_title(docblock.get_summary())
+        self.set_description(docblock.get_description())
 
 
 class AccessModifier(enum.Enum):
@@ -452,6 +464,9 @@ class Namespace(Global):
         return cur_nm
 
     def process_docblock(self, docblock):
+        self.set_title(docblock.get_summary())
+        self.set_description(docblock.get_description())
+
         tg_author = docblock.get_tags_by_name('@author')
         if len(tg_author):
             self.file_author_name = tg_author[0].get_author_name()

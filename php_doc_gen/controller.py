@@ -1,6 +1,6 @@
-from .parser import Parser
-from .generator import *
-from .azindex import Content
+from php_doc_gen.parser import Parser
+from php_doc_gen.generator import *
+from php_doc_gen.azindex import Content
 
 from os import listdir
 from os.path import isfile, isdir, join, splitext, dirname
@@ -21,7 +21,7 @@ def doc_folder(path, output_path, content):
     gen_preload(path, output_path)
     read_me = []
     if isfile(os.path.join(path, 'README.md')):
-        with open(os.path.join(path, 'README.md'), 'r') as h_file:
+        with open(os.path.join(path, 'README.md'), 'r', errors='ignore') as h_file:
             read_me = h_file.readlines()
             h_file.close()
     else:
@@ -30,6 +30,7 @@ def doc_folder(path, output_path, content):
     for php_file in php_files:
         p = Parser(join(path, php_file))
         nm = p.parse()
+        print('file ' + join(path, php_file) + ' processed!\n')
         content.process_namespace(nm)
         gen_file(nm, path, output_path, content)
         gen_namespace_hierarchy(nm, output_path, content)
@@ -66,7 +67,7 @@ class Controller:
 
 
 def main():
-    Controller(r'D:\recFolder', r'D:\recFolder_doc2', True, True)
+    Controller(r'D:\vmoex-framework\src\Yeskn\TestSuite.php', r'D:\anal', False, False)
 
 
 if __name__ == '__main__':

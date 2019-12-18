@@ -70,13 +70,13 @@ class Parser:
         # whether the docblock is the first-level docblock
         self.is_first_level_docblock = True
 
-        self.cur_docblock = Docblock
+        self.cur_docblock = Docblock()
 
         if not os.path.isfile(filepath):
             logging.info("ERROR: " + "File path {} does not exist. Exiting...".format(filepath))
             sys.exit(-1)
 
-        with open(filepath) as fp:
+        with open(filepath, errors='ignore') as fp:
             lines = fp.readlines()
 
             for line in lines:
@@ -104,14 +104,24 @@ class Parser:
                     state = State.GLOBAL
                 else:
                     logging.info('FORMAT ERROR: line should start with <?php')
-                    sys.exit(-1)
             elif state == State.GLOBAL:
                 if line == "?>":  # end of namespace
                     state = State.OUT_OF_PHP
-                elif line == "/**":
-                    prev_state = state
-                    state = State.IN_DOCBLOCK
+                elif is_docblock_line(line):
+                    pos_st = line.find('/** ')
+                    if pos_st != -1:
+                        pos_fin = line.find('*/')
+                        if pos_fin == -1:
+                            pos_fin = len(line)
+                            prev_state = state
+                            state = State.IN_DOCBLOCK
+                        docblock.append(line[pos_st+2:pos_fin])
+                    else:
+                        prev_state = state
+                        state = State.IN_DOCBLOCK
                 elif is_namespace_line(line):
+                    if self.is_first_level_docblock and self.cur_docblock:
+                        self.root_namespace.process_docblock(self.cur_docblock)
                     self.is_first_level_docblock = False
                     self.is_prev_docblock = False
                     self.cur_namespace = self.root_namespace.add_namespace(parser_namespace(line))
@@ -131,43 +141,52 @@ class Parser:
                     self.is_first_level_docblock = False
                     self.cur_function = parser_function(line)
                     self.cur_namespace.add_function(self.cur_function)
-                    self.braces_diff = 0
+                    if line.endswith('{'):
+                        self.braces_diff = 1
+                    else:
+                        self.braces_diff = 0
                     state = State.IN_FUNCTION
                 elif is_class_line(line):
                     self.is_first_level_docblock = False
                     self.cur_class = parser_class(line, self.cur_namespace)
                     self.cur_namespace.add_class(self.cur_class)
                     state = State.IN_CLASS
+                    if self.is_prev_docblock:
+                        self.cur_class.process_docblock(self.cur_docblock)
                 elif is_interface_line(line):
                     self.is_first_level_docblock = False
                     self.cur_interface = parser_interface(line, self.cur_namespace)
                     self.cur_namespace.add_interface(self.cur_interface)
                     state = State.IN_INTERFACE
+                    if self.is_prev_docblock:
+                        self.cur_interface.process_docblock(self.cur_docblock)
                 elif is_trait_line(line):
                     self.is_first_level_docblock = False
                     self.cur_trait = parser_trait(line, self.cur_namespace)
                     self.cur_namespace.add_trait(self.cur_trait)
                     state = State.IN_TRAIT
+                    if self.is_prev_docblock:
+                        self.cur_trait.process_docblock(self.cur_docblock)
                 else:
+                    self.is_first_level_docblock = False
                     logging.info('WARN: line ' + str(line_num) + ' ' + line + ' is not recognized in global state')
             elif state == State.IN_DOCBLOCK:
-                if line == "*/":
+                if is_end_docblock_line(line):
                     if self.is_first_level_docblock and prev_state == State.GLOBAL and self.is_prev_docblock:
                         self.root_namespace.process_docblock(self.cur_docblock)
                         self.is_first_level_docblock = False
                     state = prev_state
+                    docblock.append(line[:line.find('*/')])
                     self.cur_docblock = parser_docblock(docblock)
                     docblock = []
                     self.is_prev_docblock = True
                 else:
                     docblock.append(line)
             elif state == state.IN_FUNCTION:
-                if line[0] == '{':
+                if line.startswith('{') or line.endswith('{'):
                     self.braces_diff += 1
-                elif line[0] == '}':
+                if line.startswith('}'):
                     self.braces_diff -= 1
-                else:
-                    pass
                 if self.braces_diff == 0:
                     source_block.append(line)
                     self.cur_function.set_source_body(source_block)
@@ -181,13 +200,30 @@ class Parser:
                         self.root_namespace.add_global_var(parser_global_var(line))
                     source_block.append(line)
             elif state == state.IN_CLASS:
-                if line[0] == '}':
+                if line.endswith('}'):
                     self.cur_class = Class('', self.cur_namespace)
                     state = state.GLOBAL
                     self.is_prev_docblock = False
-                elif line == "/**":
-                    prev_state = state
-                    state = State.IN_DOCBLOCK
+                elif is_docblock_line(line):
+                    pos_st = line.find('/** ')
+                    if pos_st != -1:
+                        pos_fin = line.find('*/')
+                        if pos_fin == -1:
+                            pos_fin = len(line)
+                            docblock.append(line[pos_st + 2:pos_fin])
+                            prev_state = state
+                            state = State.IN_DOCBLOCK
+                        else:
+                            if self.is_first_level_docblock and prev_state == State.GLOBAL and self.is_prev_docblock:
+                                self.root_namespace.process_docblock(self.cur_docblock)
+                                self.is_first_level_docblock = False
+                            docblock.append(line[pos_st + 2:pos_fin])
+                            self.cur_docblock = parser_docblock(docblock)
+                            docblock = []
+                            self.is_prev_docblock = True
+                    else:
+                        prev_state = state
+                        state = State.IN_DOCBLOCK
                 elif is_property_var_line(line):
                     property_ = parser_property_var(line)
                     if self.is_prev_docblock:
@@ -202,29 +238,72 @@ class Parser:
                     state = state.IN_METHOD
                     self.cur_method = parser_method(line)
                     self.cur_class.add_method(self.cur_method)
-                    self.braces_diff = 0
+                    if line.endswith('{'):
+                        self.braces_diff = 1
+                    else:
+                        self.braces_diff = 0
             elif state == state.IN_INTERFACE:
-                if line[0] == '}':
+                if line.endswith('}'):
                     self.cur_interface = Interface('', self.cur_namespace)
                     state = state.GLOBAL
                     self.is_prev_docblock = False
-                elif line == "/**":
-                    prev_state = state
-                    state = State.IN_DOCBLOCK
+                elif is_docblock_line(line):
+                    pos_st = line.find('/** ')
+                    if pos_st != -1:
+                        pos_fin = line.find('*/')
+                        if pos_fin == -1:
+                            pos_fin = len(line)
+                            docblock.append(line[pos_st + 2:pos_fin])
+                            prev_state = state
+                            state = State.IN_DOCBLOCK
+                        else:
+                            if self.is_first_level_docblock and prev_state == State.GLOBAL and self.is_prev_docblock:
+                                self.root_namespace.process_docblock(self.cur_docblock)
+                                self.is_first_level_docblock = False
+                            docblock.append(line[pos_st + 2:pos_fin])
+                            self.cur_docblock = parser_docblock(docblock)
+                            docblock = []
+                            self.is_prev_docblock = True
+                    else:
+                        prev_state = state
+                        state = State.IN_DOCBLOCK
                 elif is_property_const_line(line):
                     self.cur_interface.add_constant(parser_property_const(line))
                     self.is_prev_docblock = False
                 elif is_method_line(line):
-                    self.cur_interface.add_method(parser_method(line))
-                    self.braces_diff = 0
+                    prev_state = state
+                    state = state.IN_METHOD
+                    self.cur_method = parser_method(line)
+                    self.cur_trait.add_method(self.cur_method)
+                    if line.endswith('{'):
+                        self.braces_diff = 1
+                    else:
+                        self.braces_diff = 0
             elif state == state.IN_TRAIT:
-                if line[0] == '}':
+                if line.endswith('}'):
                     self.cur_trait = Trait('', self.cur_namespace)
                     state = state.GLOBAL
                     self.is_prev_docblock = False
-                elif line == "/**":
-                    prev_state = state
-                    state = State.IN_DOCBLOCK
+                elif is_docblock_line(line):
+                    pos_st = line.find('/** ')
+                    if pos_st != -1:
+                        pos_fin = line.find('*/')
+                        if pos_fin == -1:
+                            pos_fin = len(line)
+                            docblock.append(line[pos_st + 2:pos_fin])
+                            prev_state = state
+                            state = State.IN_DOCBLOCK
+                        else:
+                            if self.is_first_level_docblock and prev_state == State.GLOBAL and self.is_prev_docblock:
+                                self.root_namespace.process_docblock(self.cur_docblock)
+                                self.is_first_level_docblock = False
+                            docblock.append(line[pos_st + 2:pos_fin])
+                            self.cur_docblock = parser_docblock(docblock)
+                            docblock = []
+                            self.is_prev_docblock = True
+                    else:
+                        prev_state = state
+                        state = State.IN_DOCBLOCK
                 elif is_property_var_line(line):
                     property_ = parser_property_var(line)
                     if self.is_prev_docblock:
@@ -236,14 +315,15 @@ class Parser:
                     state = state.IN_METHOD
                     self.cur_method = parser_method(line)
                     self.cur_trait.add_method(self.cur_method)
-                    self.braces_diff = 0
+                    if line.endswith('{'):
+                        self.braces_diff = 1
+                    else:
+                        self.braces_diff = 0
             elif state == state.IN_METHOD:
-                if line[0] == '{':
+                if line.startswith('{') or line.endswith('{'):
                     self.braces_diff += 1
-                elif line[0] == '}':
+                if line.startswith('}'):
                     self.braces_diff -= 1
-                else:
-                    pass
                 if self.braces_diff == 0:
                     source_block.append(line)
                     self.cur_method.set_source_body(source_block)
@@ -254,6 +334,9 @@ class Parser:
                     self.is_prev_docblock = False
                 else:
                     source_block.append(line)
+            else:
+                state = prev_state
+                prev_state = Global
         return self.root_namespace
 
 
@@ -303,7 +386,7 @@ def parser_docblock(docblock):
     description = ""
     while len(true_docblock) and not is_tag_line(true_docblock[0]):
         desc = true_docblock[0]
-        description += desc
+        description += desc + '<br>'
         true_docblock.pop(0)
 
     if not len(description):
@@ -322,6 +405,8 @@ def parser_docblock(docblock):
             else:
                 tags.append(tag)
                 logging.info("GOOD STYLE: tag parsed")
+        desc = line
+        description += desc + '<br>'
 
     return Docblock(summary, description, tags)
 

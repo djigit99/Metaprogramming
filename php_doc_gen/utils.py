@@ -1,9 +1,26 @@
 import re
 
 
+def is_docblock_line(line):
+    return re.match('/\*\*', line)
+
+
+def is_end_docblock_line(line):
+    return re.search('\*/', line)
+
+
 # Check if current line has a tag
 def is_tag_line(line):
-    return re.match('@[a-z]+', line)
+    possible_tags = ['@author', '@version', '@package', '@name', '@var', '@param', '@return']
+    is_tag = False
+    if re.match('@[a-z]+', line):
+        match = re.search('@[a-z]+', line)
+        if match is not None:
+            tag_name = match.group(0)
+            if tag_name in possible_tags:
+                if re.match('@[a-z]+', line):
+                    return True
+    return False
 
 
 def is_namespace_line(line):
@@ -31,7 +48,7 @@ def is_function_line(line):
 
 
 def is_class_line(line):
-    return re.match('class\s[a-zA-Z_][\w]*', line)
+    return re.match('(abstract\s)?class\s[a-zA-Z_][\w]*', line)
 
 
 def is_interface_line(line):
@@ -51,4 +68,4 @@ def is_property_const_line(line):
 
 
 def is_method_line(line):
-    return re.match('((public\s)|(protected\s)|(private\s))?(static\s)?function\s[a-zA-Z_][\w]*', line)
+    return re.match('(abstract\s)?((public\s)|(protected\s)|(private\s))?(static\s)?function\s[a-zA-Z_][\w]*\(.*\)', line)

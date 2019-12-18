@@ -1,9 +1,8 @@
 from .controller import Controller
-from os.path import isfile, isdir, dirname, abspath
-from os import sep
+from os.path import isfile, isdir, dirname, abspath, exists
+from os import sep, makedirs, umask
 import argparse
 import logging
-
 
 
 class Flags(object):
@@ -32,9 +31,6 @@ def main():
     elif isdir(Flags.p):
         if not Flags.t:
             Flags.t = Flags.p
-        elif not isdir(Flags.t):
-            print('target directory not found, please enter the correct path')
-            exit(1)
         else:
             pass
         Flags.p = abspath(Flags.p)
@@ -44,6 +40,12 @@ def main():
             Flags.p = Flags.p[:-1]
         if Flags.t.endswith(sep):
             Flags.t = Flags.t[:-1]
+        if not exists(Flags.t):
+            try:
+                original_umask = umask(0)
+                makedirs(Flags.t, 0o777, True)
+            finally:
+                umask(original_umask)
         if Flags.r:
             Controller(Flags.p, Flags.t, True, True)
         else:
