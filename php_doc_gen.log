@@ -1,0 +1,408 @@
+INFO:root:WARN: line 2 use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache; is not recognized in global state
+INFO:root:WARN: line 2 use Symfony\Component\DependencyInjection\ContainerBuilder; is not recognized in global state
+INFO:root:WARN: line 3 use Symfony\Component\HttpKernel\Kernel; is not recognized in global state
+INFO:root:WARN: line 4 use Symfony\Component\Config\Loader\LoaderInterface; is not recognized in global state
+INFO:root:WARN: line 2 use Workerman\Worker; is not recognized in global state
+INFO:root:WARN: line 3 use Workerman\Lib\Timer; is not recognized in global state
+INFO:root:WARN: line 4 use PHPSocketIO\SocketIO; is not recognized in global state
+INFO:root:WARN: line 5 use Symfony\Component\Yaml\Yaml; is not recognized in global state
+INFO:root:WARN: line 6 include __DIR__ . '/../vendor/autoload.php'; is not recognized in global state
+INFO:root:WARN: line 14 if (!empty($parameters['socket_local_cert'])) { is not recognized in global state
+INFO:root:WARN: line 16 'ssl' => [ is not recognized in global state
+INFO:root:WARN: line 17 'local_cert' => $parameters['socket_local_cert'], is not recognized in global state
+INFO:root:WARN: line 18 'local_pk' => $parameters['socket_local_pk'], is not recognized in global state
+INFO:root:WARN: line 19 'verify_peer' => false is not recognized in global state
+INFO:root:WARN: line 20 ] is not recognized in global state
+INFO:root:WARN: line 21 ); is not recognized in global state
+INFO:root:WARN: line 22 } else { is not recognized in global state
+INFO:root:WARN: line 24 } is not recognized in global state
+INFO:root:WARN: line 25 if (preg_match('/:(\d+)\/?$/', $parameters['socket_host'], $mat)) { is not recognized in global state
+INFO:root:WARN: line 27 } is not recognized in global state
+INFO:root:WARN: line 28 if (preg_match('/:(\d+)\/?$/', $parameters['socket_push_host'], $mat)) { is not recognized in global state
+INFO:root:WARN: line 30 } is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:WARN: line 47 global $uidConnectionMap, $last_online_count, $last_online_page_count; is not recognized in global state
+INFO:root:WARN: line 49 if ($token) { is not recognized in global state
+INFO:root:WARN: line 51 if (empty($redisToken) || $redisToken != $token) { is not recognized in global state
+INFO:root:WARN: line 52 return ; is not recognized in global state
+INFO:root:WARN: line 53 } is not recognized in global state
+INFO:root:WARN: line 54 } is not recognized in global state
+INFO:root:WARN: line 55 if (isset($socket->uid)) { is not recognized in global state
+INFO:root:WARN: line 56 return; is not recognized in global state
+INFO:root:WARN: line 57 } is not recognized in global state
+INFO:root:WARN: line 58 if (!isset($uidConnectionMap[$user])) { is not recognized in global state
+INFO:root:WARN: line 60 } is not recognized in global state
+INFO:root:WARN: line 61 ++$uidConnectionMap[$user]; is not recognized in global state
+INFO:root:WARN: line 65 'onlineCount' => $last_online_count, is not recognized in global state
+INFO:root:WARN: line 66 'pageCount' => $last_online_page_count is not recognized in global state
+INFO:root:WARN: line 67 ]; is not recognized in global state
+INFO:root:WARN: line 69 }); is not recognized in global state
+INFO:root:WARN: line 71 if (!isset($socket->uid)) { is not recognized in global state
+INFO:root:WARN: line 72 return; is not recognized in global state
+INFO:root:WARN: line 73 } is not recognized in global state
+INFO:root:WARN: line 74 global $uidConnectionMap; is not recognized in global state
+INFO:root:WARN: line 75 if (--$uidConnectionMap[$socket->uid] <= 0) { is not recognized in global state
+INFO:root:WARN: line 76 unset($uidConnectionMap[$socket->uid]); is not recognized in global state
+INFO:root:WARN: line 77 } is not recognized in global state
+INFO:root:WARN: line 78 }); is not recognized in global state
+INFO:root:WARN: line 79 }); is not recognized in global state
+INFO:root:WARN: line 81 global $socketPushPort; is not recognized in global state
+INFO:root:WARN: line 84 global $uidConnectionMap; is not recognized in global state
+INFO:root:WARN: line 86 // 推送数据的url格式 type=publish&to=uid&content=xxxx is not recognized in global state
+INFO:root:WARN: line 87 switch (@$_POST['type']) { is not recognized in global state
+INFO:root:WARN: line 88 case 'publish': is not recognized in global state
+INFO:root:WARN: line 89 global $sender_io; is not recognized in global state
+INFO:root:WARN: line 91 if ($to) { is not recognized in global state
+INFO:root:WARN: line 93 } else { is not recognized in global state
+INFO:root:WARN: line 95 } is not recognized in global state
+INFO:root:WARN: line 96 if ($to && !isset($uidConnectionMap[$to])) { is not recognized in global state
+INFO:root:WARN: line 97 return $http_connection->send('offline'); is not recognized in global state
+INFO:root:WARN: line 98 } else { is not recognized in global state
+INFO:root:WARN: line 99 return $http_connection->send('ok'); is not recognized in global state
+INFO:root:WARN: line 100 } is not recognized in global state
+INFO:root:WARN: line 101 } is not recognized in global state
+INFO:root:WARN: line 102 return $http_connection->send('fail'); is not recognized in global state
+INFO:root:WARN: line 103 }; is not recognized in global state
+INFO:root:WARN: line 105 Timer::add(1, function () { is not recognized in global state
+INFO:root:WARN: line 106 global $uidConnectionMap, $last_online_count, $last_online_page_count, $sender_io; is not recognized in global state
+INFO:root:WARN: line 109 if ($last_online_count != $online_count_now is not recognized in global state
+INFO:root:WARN: line 110 || $last_online_page_count != $online_page_count_now is not recognized in global state
+INFO:root:WARN: line 111 ) { is not recognized in global state
+INFO:root:WARN: line 113 'onlineCount' => $online_count_now, is not recognized in global state
+INFO:root:WARN: line 114 'pageCount' => $online_page_count_now is not recognized in global state
+INFO:root:WARN: line 115 ]; is not recognized in global state
+INFO:root:WARN: line 119 } is not recognized in global state
+INFO:root:WARN: line 120 }); is not recognized in global state
+INFO:root:WARN: line 121 }); is not recognized in global state
+INFO:root:WARN: line 122 if (!defined('GLOBAL_START')) { is not recognized in global state
+INFO:root:WARN: line 123 Worker::runAll(); is not recognized in global state
+INFO:root:WARN: line 124 } is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is This file is part of project project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jaggle<br>Create: 2018-09-12 14:30:12<br>
+INFO:root:WARN: line 9 use Symfony\Component\HttpKernel\Bundle\Bundle; is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is This file is part of project project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jaggle<br>Create: 2018-09-12 15:31:56<br>
+INFO:root:WARN: line 9 use Doctrine\Bundle\DoctrineBundle\Registry; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand; is not recognized in global state
+INFO:root:WARN: line 11 use Symfony\Component\Console\Input\InputInterface; is not recognized in global state
+INFO:root:WARN: line 12 use Symfony\Component\Console\Input\InputOption; is not recognized in global state
+INFO:root:WARN: line 13 use Symfony\Component\Console\Output\OutputInterface; is not recognized in global state
+INFO:root:WARN: line 14 use Symfony\Component\Console\Style\SymfonyStyle; is not recognized in global state
+INFO:root:WARN: line 15 use Yeskn\MainBundle\Repository\UserRepository; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jaggle<br>Create: 2018-09-14 23:46:25<br>
+INFO:root:WARN: line 9 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\Console\Input\InputInterface; is not recognized in global state
+INFO:root:WARN: line 11 use Symfony\Component\Console\Output\OutputInterface; is not recognized in global state
+INFO:root:WARN: line 12 use Yeskn\AdminBundle\Services\LoadTranslationService; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jaggle<br>Create: 2018-09-14 22:17:58<br>
+INFO:root:WARN: line 9 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\Console\Input\InputInterface; is not recognized in global state
+INFO:root:WARN: line 11 use Symfony\Component\Console\Output\OutputInterface; is not recognized in global state
+INFO:root:WARN: line 12 use Symfony\Component\Yaml\Yaml; is not recognized in global state
+INFO:root:WARN: line 13 use Yeskn\MainBundle\Entity\Translation; is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jaggle<br>Create: 2018-10-28 10:15:27<br>
+INFO:root:WARN: line 9 use Doctrine\ORM\EntityRepository; is not recognized in global state
+INFO:root:WARN: line 10 use GuzzleHttp\Client; is not recognized in global state
+INFO:root:WARN: line 11 use Symfony\Component\Console\Input\InputInterface; is not recognized in global state
+INFO:root:WARN: line 12 use Symfony\Component\Console\Output\OutputInterface; is not recognized in global state
+INFO:root:WARN: line 13 use Yeskn\MainBundle\Entity\Translation; is not recognized in global state
+INFO:root:WARN: line 14 use Yeskn\Support\Command\AbstractCommand; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-15 16:36:37<br>
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is This file is part of project project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jaggle<br>Create: 2018-09-12 14:30:12<br>
+INFO:root:WARN: line 9 use Symfony\Bundle\FrameworkBundle\Controller\Controller; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\Routing\Annotation\Route; is not recognized in global state
+INFO:root:WARN: line 11 use Symfony\Component\HttpFoundation\Request; is not recognized in global state
+INFO:root:WARN: line 12 use Symfony\Component\HttpFoundation\Response; is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is @Route("/", name="admin_index")
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: docblock summary is @Route("/confirm_modal", name="admin_confirm_modal", methods={"POST"})
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is @Route("/alert_modal", name="admin_alert_modal", methods={"GET"})
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-15 10:12:29<br>
+INFO:root:WARN: line 9 use Symfony\Bundle\FrameworkBundle\Controller\Controller; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\HttpFoundation\File\File; is not recognized in global state
+INFO:root:WARN: line 11 use Symfony\Component\HttpFoundation\Request; is not recognized in global state
+INFO:root:WARN: line 12 use Symfony\Component\HttpFoundation\Response; is not recognized in global state
+INFO:root:WARN: line 13 use Symfony\Component\Routing\Annotation\Route; is not recognized in global state
+INFO:root:WARN: line 14 use Yeskn\MainBundle\Form\Logic\OptionsLogic; is not recognized in global state
+INFO:root:WARN: line 15 use Yeskn\MainBundle\Form\OptionsBasic; is not recognized in global state
+INFO:root:WARN: line 16 use Yeskn\Support\File\ImageHandler; is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is Class ManageController
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: Tag_Package parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: should be tag line
+INFO:root:GOOD STYLE: docblock summary is @Route("/basic", name="admin_manage_basic")
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is @Route("/general/{optionGroup}", name="admin_options_general")
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:WARN: line 3 use Symfony\Component\Routing\Annotation\Route; is not recognized in global state
+INFO:root:WARN: line 4 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security; is not recognized in global state
+INFO:root:WARN: line 5 use Symfony\Bundle\FrameworkBundle\Controller\Controller; is not recognized in global state
+INFO:root:WARN: line 6 use Symfony\Component\HttpFoundation\Request; is not recognized in global state
+INFO:root:WARN: line 7 use Symfony\Component\HttpFoundation\Response; is not recognized in global state
+INFO:root:WARN: line 8 use Yeskn\AdminBundle\CrudEvent\ProcessEditPostEvent; is not recognized in global state
+INFO:root:WARN: line 9 use Yeskn\AdminBundle\CrudEvent\StartEditPostEvent; is not recognized in global state
+INFO:root:WARN: line 10 use Yeskn\MainBundle\Entity\Post; is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is Class PostController
+INFO:root:GOOD STYLE: docblock description is @Route("/post")<br>@Security("has_role('ROLE_ADMIN')")<br>
+INFO:root:GOOD STYLE: docblock summary is @Route("/create", methods={"GET", "POST"})
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is @Route("/edit", name="yeskn_admin_post_edit")
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is This file is part of project vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2019-03-25 23:01:45<br>
+INFO:root:WARN: line 9 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\Filesystem\Filesystem; is not recognized in global state
+INFO:root:WARN: line 11 use Symfony\Component\HttpFoundation\JsonResponse; is not recognized in global state
+INFO:root:WARN: line 12 use Symfony\Component\HttpFoundation\Request; is not recognized in global state
+INFO:root:WARN: line 13 use Symfony\Component\Routing\Annotation\Route; is not recognized in global state
+INFO:root:WARN: line 14 use Yeskn\Support\AbstractController; is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is Class UploadController
+INFO:root:BAD STYLE: no docblock description
+INFO:root:GOOD STYLE: Tag_Package parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: should be tag line
+INFO:root:GOOD STYLE: docblock summary is @Route("/upload/images")
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no param description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-18 20:08:23<br>
+INFO:root:WARN: line 9 abstract class AbstractCrudEntityEvent implements CrudEntityEventInterface is not recognized in global state
+INFO:root:WARN: line 10 { is not recognized in global state
+INFO:root:WARN: line 11 protected $entity; is not recognized in global state
+INFO:root:WARN: line 12 public function setEntity($entity) is not recognized in global state
+INFO:root:WARN: line 13 { is not recognized in global state
+INFO:root:WARN: line 15 return $this; is not recognized in global state
+INFO:root:WARN: line 16 } is not recognized in global state
+INFO:root:WARN: line 17 public function getEntity() is not recognized in global state
+INFO:root:WARN: line 18 { is not recognized in global state
+INFO:root:WARN: line 19 return $this->entity; is not recognized in global state
+INFO:root:WARN: line 20 } is not recognized in global state
+INFO:root:WARN: line 21 abstract function execute(); is not recognized in global state
+INFO:root:WARN: line 22 } is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-18 20:33:48<br>
+INFO:root:WARN: line 9 use Symfony\Bridge\Twig\Extension\AssetExtension; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\Routing\RouterInterface; is not recognized in global state
+INFO:root:WARN: line 11 abstract class AbstractCrudListEvent implements CrudListEventInterface is not recognized in global state
+INFO:root:WARN: line 12 { is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:WARN: line 16 protected $asset; is not recognized in global state
+INFO:root:WARN: line 17 protected $list; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:WARN: line 21 protected $router; is not recognized in global state
+INFO:root:WARN: line 22 public function setList(array $list) is not recognized in global state
+INFO:root:WARN: line 23 { is not recognized in global state
+INFO:root:WARN: line 25 return $this; is not recognized in global state
+INFO:root:WARN: line 26 } is not recognized in global state
+INFO:root:WARN: line 27 protected function getList() is not recognized in global state
+INFO:root:WARN: line 28 { is not recognized in global state
+INFO:root:WARN: line 29 return $this->list; is not recognized in global state
+INFO:root:WARN: line 30 } is not recognized in global state
+INFO:root:WARN: line 31 public function imgColumn($val, $width = 100) is not recognized in global state
+INFO:root:WARN: line 32 { is not recognized in global state
+INFO:root:WARN: line 33 if (empty($val)) return ''; is not recognized in global state
+INFO:root:WARN: line 35 return sprintf('<img width="%spx" height="%spx" src="%s" />', $width, $width, $val); is not recognized in global state
+INFO:root:WARN: line 36 } is not recognized in global state
+INFO:root:WARN: line 37 public function linkColumn($text, $route, $params = null) is not recognized in global state
+INFO:root:WARN: line 38 { is not recognized in global state
+INFO:root:WARN: line 39 if (is_null($params)) { is not recognized in global state
+INFO:root:WARN: line 40 return sprintf("<a href='%s'>%s</a>", $route, $text); is not recognized in global state
+INFO:root:WARN: line 41 } is not recognized in global state
+INFO:root:WARN: line 42 return sprintf("<a href='%s'>%s</a>", $this->router->generate($route, $params), $text); is not recognized in global state
+INFO:root:WARN: line 43 } is not recognized in global state
+INFO:root:WARN: line 44 abstract function execute(); is not recognized in global state
+INFO:root:WARN: line 45 } is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-18 20:03:38<br>
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 12:41:37<br>
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-18 20:00:18<br>
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 13:36:05<br>
+INFO:root:WARN: line 9 use Yeskn\AdminBundle\Services\LoadTranslationService; is not recognized in global state
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 17:10:07<br>
+INFO:root:WARN: line 9 use Yeskn\MainBundle\Entity\Translation; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 12:39:38<br>
+INFO:root:WARN: line 9 use Yeskn\MainBundle\Entity\Announce; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 12:37:11<br>
+INFO:root:WARN: line 9 use Yeskn\MainBundle\Entity\Comment; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-17 20:20:20<br>
+INFO:root:WARN: line 9 use Symfony\Component\Filesystem\Filesystem; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\HttpFoundation\File\UploadedFile; is not recognized in global state
+INFO:root:WARN: line 11 use Yeskn\MainBundle\Entity\Goods; is not recognized in global state
+INFO:root:WARN: line 12 use Intervention\Image\ImageManagerStatic as Image; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 12:37:11<br>
+INFO:root:WARN: line 9 use Yeskn\MainBundle\Entity\Page; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-17 20:20:20<br>
+INFO:root:WARN: line 9 use Symfony\Component\Filesystem\Filesystem; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\HttpFoundation\File\UploadedFile; is not recognized in global state
+INFO:root:WARN: line 11 use Yeskn\MainBundle\Entity\Photo; is not recognized in global state
+INFO:root:WARN: line 12 use Intervention\Image\ImageManagerStatic as Image; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-17 20:20:20<br>
+INFO:root:WARN: line 9 use Symfony\Component\Filesystem\Filesystem; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\HttpFoundation\File\UploadedFile; is not recognized in global state
+INFO:root:WARN: line 11 use Yeskn\MainBundle\Entity\Post; is not recognized in global state
+INFO:root:WARN: line 12 use Intervention\Image\ImageManagerStatic as Image; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 12:39:38<br>
+INFO:root:WARN: line 9 use Symfony\Component\HttpFoundation\File\File; is not recognized in global state
+INFO:root:WARN: line 10 use Yeskn\MainBundle\Entity\Tab; is not recognized in global state
+INFO:root:WARN: line 11 use Yeskn\Support\File\ImageHandler; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 12:37:11<br>
+INFO:root:WARN: line 9 use Yeskn\MainBundle\Entity\Tag; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:GOOD STYLE: docblock summary is This file is part of project yeskn-studio/vmoex-framework.
+INFO:root:GOOD STYLE: docblock description is Author: Jake<br>Create: 2018-09-16 14:24:37<br>
+INFO:root:WARN: line 9 use Doctrine\ORM\EntityManagerInterface; is not recognized in global state
+INFO:root:WARN: line 10 use Symfony\Component\Filesystem\Filesystem; is not recognized in global state
+INFO:root:WARN: line 11 use Symfony\Component\HttpFoundation\File\UploadedFile; is not recognized in global state
+INFO:root:WARN: line 12 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException; is not recognized in global state
+INFO:root:WARN: line 13 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface; is not recognized in global state
+INFO:root:WARN: line 14 use Yeskn\MainBundle\Entity\User; is not recognized in global state
+INFO:root:WARN: line 15 use Intervention\Image\ImageManagerStatic as Image; is not recognized in global state
+INFO:root:WARN: line 16 use Yeskn\MainBundle\Services\RandomAvatarService; is not recognized in global state
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: var name missed
+INFO:root:Error: can't parse the tag

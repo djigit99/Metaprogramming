@@ -1,0 +1,81 @@
+parser class:
+	state = [GLOBAL, IN_CLASS, IN_INTERFACE, IN_TRAIT, IN_DOCBLOCK]
+	parser("path/to/file.php") {
+		1) delete empty lines
+		2) parse namespace
+		3) state IN_NAMESPACE:
+		4) state GLOBAL:
+			3.1) parse var name + var type + var' comment above
+			3.2) parse define(aka const) + const value + const' comment
+			3.3) parse function + function' parameters + function' comment
+			3.4) parse class' name + inhereted class and interface, go to state IN_CLASS
+			3.5) parse interfaces'name + inhereted interfaces + interface' comment, go to state IN_INTERFACE
+			3.6) parse trait name, go to state IN_TRAIT
+		5) state IN_CLASS:
+			4.1) parse property name + property type + property' comment above
+			4.2) parse define(aka const) + const value + const' comment
+			4.3) parse method + method' parameters + method' comment
+		6) state IN_INTERFACE:
+			4.1) parse define(aka const) + const value + const' comment
+			4.2) parse method + method' parameters + method' comment
+		7) state IN_TRAIT:
+			4.1) parse property name + property type + property' comment above
+			4.2) parse define(aka const) + const value + const' comment
+			4.3) parse method + method' parameters + method' comment
+	}
+
+
+parse DocBlock after namespace !!!
+
+tags:
+	1) global vars: @global(deprecated)
+	2) const: @access(deprecated)
+	3) function: @param, @global(deprecated), @return
+	4) class, interface, trait:
+	5) property: @var
+	6) method: @global(deprecated), @param, @return
+
+parser class returns namespace, items
+
+
+---- Ways of parse comment(com):
+
+GLOBAL state:
+	com -> com:
+		if first time: add com to namespace
+		else : ignore
+	com -> define: add com to constant
+	com -> const: add com to const
+	com -> $var: add com to global_var
+	com -> $GLOBAL['var']: add com to global_var
+	com -> function: add com to function
+	com -> class: add com to class
+	com -> interface: add com to interface
+	com -> trait: add com to trait
+
+------------------------------------------
+two ways to declare global var:
+$var = 1;
+$GLOBAL['var'] = 1;
+
+-------------------------------------------
+two ways to declare constatnt:
+
+define('const_name', 'const_value');
+const CONST_NAME = 'value';
+
+'define' can't be inside of class, use const instead
+
+
+
+
+
+
+
+
+
+
+
+
+
+

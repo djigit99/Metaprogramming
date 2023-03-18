@@ -1,0 +1,17 @@
+INFO:root:GOOD STYLE: docblock summary is Title
+INFO:root:GOOD STYLE: docblock description is description
+INFO:root:GOOD STYLE: Tag_Author parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no docblock summary
+INFO:root:BAD STYLE: no docblock description
+INFO:root:BAD STYLE: no docblock tag
+INFO:root:GOOD STYLE: docblock summary is title
+INFO:root:GOOD STYLE: docblock description is description
+INFO:root:GOOD STYLE: Tag_Param parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:BAD STYLE: no return description
+INFO:root:GOOD STYLE: Tag_Return parsed
+INFO:root:GOOD STYLE: tag parsed
+INFO:root:WARN: line 31 echo c; is not recognized in global state
+INFO:root:WARN: line 32 echo mn\c; is not recognized in global state
+INFO:root:WARN: line 33 mn\func(4); is not recognized in global state

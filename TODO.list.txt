@@ -1,0 +1,46 @@
+Q1: How to import an xml file in javascript.
+Status: closed 
+
+Q2: How to generate an html page according to file being viewed.
+Status: in process
+
+Q3: html page structure.
+Status: in process
+
+Q4: page presentation with css
+Status: in process
+
+Q5: interactive pages with js
+Status: in process
+
+Q6: main page
+Status: in process
+
+Q7: utility's keys
+Status: in process
+
+Q8: types of object: decide which types of object we want to parse
+Status: closed
+
+Q9: comment design (should we use docblock ?)
+Status: closed
+
+Q10: process curly brackets(braces) after for/while loop in methods/functions
+Status: closed
+
+Q11: connect docblock with object
+Status: in process
+
+Q12: add include feature
+Status: open
+
+Q13: multiple var declaration
+Status: open
+
+Q14: add ? into html table cell in order to describe an object goal
+Status: open
+
+Q15: constant is not a global scope
+Status: open
+
+
